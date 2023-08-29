@@ -1,0 +1,21 @@
+{
+  "short_name": "Chat App",
+  "name": "Chat App 1",
+  "description": "An app that lets people chat with each other.",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/login",
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "#3b82f6"
+}
