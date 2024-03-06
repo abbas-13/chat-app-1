@@ -3,6 +3,8 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  setDoc,
+  getDoc,
   arrayUnion,
   Timestamp,
   serverTimestamp,
@@ -24,7 +26,14 @@ export const ChatBox = () => {
 
   const sendMessage = async () => {
     const { uid, displayName } = authInstance.currentUser;
+    const { uid: receiverId, displayName: receiverName } = chatData.user;
+    const chatDocument = await getDoc(
+      doc(dbInstance, "chats", chatData.chatId)
+    );
 
+    if (!chatDocument.exists()) {
+      await setDoc(doc(dbInstance, "chats", chatData.chatId), {});
+    }
     await updateDoc(doc(dbInstance, "chats", chatData.chatId), {
       messages: arrayUnion({
         text: newMessage,
@@ -38,13 +47,15 @@ export const ChatBox = () => {
     await updateDoc(doc(dbInstance, "userChats", uid), {
       [chatData.chatId + ".lastMessage"]: {
         newMessage,
+        sender: displayName,
         date: serverTimestamp(),
       },
     });
 
-    await updateDoc(doc(dbInstance, "userChats", chatData.user.uid), {
+    await updateDoc(doc(dbInstance, "userChats", receiverId), {
       [chatData.chatId + ".lastMessage"]: {
         newMessage,
+        sender: displayName,
         date: serverTimestamp(),
       },
     });
@@ -54,30 +65,33 @@ export const ChatBox = () => {
     event.preventDefault();
 
     if (newMessage.trim() === "") return;
-    console.log("number 7");
 
     sendMessage();
     setnewMessage("");
   };
 
+  console.log(chatData.chatId);
+
   useEffect(() => {
     const unsubcribe = onSnapshot(
       doc(dbInstance, "chats", chatData.chatId),
-      (doc) => {
-        doc.exists() && setMessages(doc.data().messages);
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          setMessages(docSnapshot.data().messages);
+        } else {
+          console.log("document does not exist");
+        }
       }
     );
-    console.log("number 2", chatData.chatId);
 
     return () => unsubcribe();
-  }, [chatData.chatId, messages.length, dbInstance]);
+  }, [chatData.chatId, messages?.length]);
 
   useEffect(() => {
     if (scroll.current) {
       scroll.current.scrollTop = scroll.current.scrollHeight;
     }
-    console.log("number 3");
-  }, [chatData.chatId, messages.length]);
+  }, [chatData.chatId, messages?.length]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg border border-[#95b8d1] h-full overflow-hidden">

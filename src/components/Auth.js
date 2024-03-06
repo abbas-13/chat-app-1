@@ -26,6 +26,7 @@ export const Auth = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [input, setInput] = useState({
     name: "",
     email: "",
@@ -67,24 +68,15 @@ export const Auth = ({ children }) => {
         uid: authInstance.currentUser.uid,
         onlineStatus: true,
       });
-      const document = getDoc(
-        doc(dbInstance, "userChats", authInstance.currentUser.uid)
-      );
-      if (!document) {
-        await setDoc(
-          doc(dbInstance, "userChats", authInstance.currentUser.uid),
-          {}
-        );
-      }
 
       setUser(token);
     } catch (error) {
-      const errorCode = error.code;
       const errorMsg = error.message;
       const userEmail = error.customData.email;
       const credentialType = GoogleAuthProvider.credentialFromError(error);
 
-      console.log(errorCode, errorMsg, userEmail, credentialType);
+      console.log(errorMsg, userEmail, credentialType);
+      setError(error.code);
     }
   };
 
@@ -100,9 +92,7 @@ export const Auth = ({ children }) => {
       localStorage.setItem("authToken", authInstance.currentUser.accessToken);
       setUser(authInstance.currentUser.accessToken);
     } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage);
+      setError(error.code);
     }
   };
 
@@ -148,6 +138,7 @@ export const Auth = ({ children }) => {
         setInput,
         authInstance,
         dbInstance,
+        error,
       }}
     >
       {children}

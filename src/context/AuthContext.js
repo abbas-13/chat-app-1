@@ -11,4 +11,5 @@ export const AuthContext = createContext({
   googleSignIn: () => {},
   input: false,
   setInput: () => {},
+  error: null,
 });

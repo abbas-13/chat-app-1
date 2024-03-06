@@ -29,7 +29,6 @@ export const Sidebar = () => {
       collection(dbInstance, "users"),
       where("email", "==", searchValue)
     );
-    console.log("number 8");
 
     try {
       const { docs } = await getDocs(q);
@@ -55,16 +54,24 @@ export const Sidebar = () => {
 
       if (!_document) {
         await setDoc(doc(dbInstance, "chats", chatId), { messages: [] });
-        await updateDoc(
+
+        await setDoc(
           doc(dbInstance, "userChats", authInstance.currentUser.uid),
           {
-            [chatId + ".userInfo"]: {
+            [chatId]: {
               uid: searchedUser.uid,
               displayName: searchedUser.displayName,
               date: serverTimestamp(),
             },
           }
         );
+        await setDoc(doc(dbInstance, "userChats", searchedUser.uid), {
+          [chatId]: {
+            uid: authInstance.currentUser.uid,
+            displayName: authInstance.currentUser.displayName,
+            date: serverTimestamp(),
+          },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -72,9 +79,8 @@ export const Sidebar = () => {
   };
 
   const handleSelect = () => {
-    console.log("number 9");
-
     createChat();
+
     setSearchedUser(null);
     setSearchValue("");
   };
@@ -112,7 +118,7 @@ export const Sidebar = () => {
       )}
       <div className="mx-2 my-2 border border-black" />
       <div className="text-center w-full">Chats</div>
-      <ConversationsList />
+      <ConversationsList searchedUser={searchedUser} />
     </div>
   );
 };

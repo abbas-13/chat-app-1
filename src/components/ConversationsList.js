@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 
-export const ConversationsList = () => {
+export const ConversationsList = ({ searchedUser }) => {
   const [conversationsList, setConversationsList] = useState([]);
 
   const { dbInstance, authInstance } = useContext(AuthContext);
@@ -12,7 +12,10 @@ export const ConversationsList = () => {
 
   const handleClick = async (userData) => {
     dispatch({ type: "CHANGE_USER", payload: userData });
+    console.log(userData);
   };
+
+  console.log(chatData.user.displayName);
 
   useEffect(() => {
     if (authInstance.currentUser) {
@@ -29,35 +32,32 @@ export const ConversationsList = () => {
                     return data[chatId];
                   })
                   .sort((a, b) => {
-                    return b.lastMessage.date - a.lastMessage.date;
+                    return b.lastMessage?.date - a.lastMessage?.date;
                   })
               );
             }
           }
         }
       );
-      console.log("number 1");
+
       return () => {
         unsub();
       };
-      // }
     }
   }, [authInstance.currentUser, dbInstance, chatData.chatId]);
 
-  // const sortedMessages = conversationsList.sort((a, b) => {
-  //   return b.lastMessage.date - a.lastMessage.date;
-  // });
+  const result = conversationsList.map((conversation) => conversation);
 
-  console.log(conversationsList);
+  console.log(result);
 
   return conversationsList.map((conversation, index) => (
     <div
-      onClick={() => handleClick(conversation.userInfo)}
+      onClick={() => handleClick(conversation)}
       className="bg-[#d6eadf] cursor-pointer text-black hover:bg-[#b8e0d2] hover:text-black active:bg-[#63BB9C] active:text-black active:border-white w-11/12 m-auto py-6 rounded-lg  justify-center"
       key={index}
     >
       <div className="flex flex-col">
-        <p>{conversation.userInfo.displayName}</p>
+        <p>{conversation.displayName}</p>
         <p className="text-sm text-gray-500">
           {conversation.lastMessage && conversation.lastMessage.newMessage}
         </p>

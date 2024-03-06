@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export const LoginPage = () => {
-  const { emailSignIn, googleSignIn, input, setInput } =
+  const { emailSignIn, googleSignIn, input, setInput, error } =
     useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -26,6 +26,9 @@ export const LoginPage = () => {
     <div className="flex flex-col h-full justify-center items-center">
       <div className="rounded p-8 border w-100 shadow-lg">
         <img src={img1} className="m-auto h-32" alt="chatapp logo" />
+        <div className="text-red-600">
+          {error === "auth/wrong-password" ? "Wrong password" : error}
+        </div>
         <form onSubmit={handleSubmit} className="grid ">
           <input
             className="border rounded-lg bg-gray-100 p-2 my-4"
