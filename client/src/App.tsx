@@ -1,12 +1,15 @@
 import "./App.css";
 import { Appshell } from "./components/appshell";
 import { Dashboard } from "./components/ui/dashboard";
+import { ThemeProvider } from "./components/ui/themeProvider";
 
 function App() {
   return (
-    <Appshell>
-      <Dashboard />
-    </Appshell>
+    <ThemeProvider defaultTheme="light">
+      <Appshell>
+        <Dashboard />
+      </Appshell>
+    </ThemeProvider>
   );
 }
 
