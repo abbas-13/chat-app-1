@@ -6,7 +6,7 @@ export const Dashboard = () => {
   return (
     <>
       {!isMobile && <Navbar />}
-      <div className="w-full h-full bg-background"></div>
+      <div className="w-full h-[calc(100%-54px)] bg-background"></div>
     </>
   );
 };

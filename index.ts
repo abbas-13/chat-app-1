@@ -6,7 +6,11 @@ import MongoStore from "connect-mongo";
 import path, { dirname } from "path";
 
 import "dotenv/config";
+import "./models/user.js";
+import "./services/passport.js";
 import { fileURLToPath } from "url";
+import authRoutes from "./routes/authRoutes";
+import passport from "passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,6 +49,11 @@ app.use(
 
 const PORT = process.env.PORT || 8000;
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+authRoutes(app);
+
 app.get("health", (req, res) => {
   res.status(200).json({ status: "OK", timeStamp: new Date() });
 });
@@ -59,7 +68,8 @@ if (process.env.NODE_ENV === "production") {
 
 app.listen(PORT, (error) => {
   if (!error) {
-    console.log("Server running successfully, and listening on port" + PORT);
+    console.log("Server running successfully, and listening on port " + PORT);
+  } else {
+    console.log("Server did not start. ERROR: ", error);
   }
-  console.log("Server did not start. ERROR: ", error);
 });
