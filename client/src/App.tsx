@@ -1,14 +1,30 @@
-import "./App.css";
+import { Route, Routes } from "react-router";
+
 import { Appshell } from "./components/appshell";
-import { Dashboard } from "./components/ui/dashboard";
+import { Dashboard } from "./components/dashboard";
 import { ThemeProvider } from "./components/ui/themeProvider";
+import { Login } from "./components/loginPage";
+import { SignUp } from "./components/signupPage";
+import { Auth } from "./components/auth";
+import "./App.css";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="light">
-      <Appshell>
-        <Dashboard />
-      </Appshell>
+      <Auth>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Appshell>
+                <Dashboard />
+              </Appshell>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      </Auth>
     </ThemeProvider>
   );
 }
