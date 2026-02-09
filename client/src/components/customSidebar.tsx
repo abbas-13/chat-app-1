@@ -1,12 +1,12 @@
+import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
+import { useContext } from "react";
+import { useNavigate } from "react-router";
+
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ui/themeProvider";
 import { Sidebar, SidebarContent, useSidebar } from "./ui/sidebar";
-import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { Switch } from "./ui/switch";
-import { useContext } from "react";
 import { AuthContext } from "@/context/authContext";
-import { useNavigate } from "react-router";
 import { Avatar } from "./ui/avatar";
 import {
   Menubar,
@@ -15,6 +15,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "./ui/menubar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const CustomSidebar = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -55,8 +56,6 @@ export const CustomSidebar = () => {
       console.error(errorData);
     }
   };
-
-  console.log(user);
 
   const sidebarContent = () => {
     return (

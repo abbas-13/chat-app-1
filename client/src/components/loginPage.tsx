@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-interface SignInForm {
+interface TSignInForm {
   email: string;
   password: string;
 }
@@ -23,11 +23,11 @@ export const Login = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<SignInForm>();
+  } = useForm<TSignInForm>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<SignInForm> = async (data) => {
+  const onSubmit: SubmitHandler<TSignInForm> = async (data) => {
     try {
       const response = await fetch("/auth/login", {
         method: "POST",

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { toast } from "sonner";
 
-export interface SignUpForm {
+interface TSignUpForm {
   email: string;
   name: string;
   password: string;
@@ -24,7 +24,7 @@ export const SignUp = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<SignUpForm>();
+  } = useForm<TSignUpForm>();
   const [showPassword, setShowPassword] = useState({
     pwd: false,
     confirmPwd: false,
