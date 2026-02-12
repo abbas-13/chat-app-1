@@ -30,7 +30,7 @@ export const SignUp = () => {
     confirmPwd: false,
   });
 
-  const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+  const onSubmit: SubmitHandler<TSignUpForm> = async (data) => {
     try {
       const response = await fetch("/auth/signup", {
         method: "POST",

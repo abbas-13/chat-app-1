@@ -37,7 +37,9 @@ passport.use(
           displayName: profile.displayName,
           name: profile.name.givenName,
           email: profile._json.email,
-        }).save();
+        });
+
+        await user.save();
         done(null, user);
       } catch (err) {
         const errorMessage =
@@ -65,12 +67,13 @@ passport.use(
           done(null, existingUser);
         }
 
-        const user = await new User({
+        const user = new User({
           githubId: profile.id,
           name: profile.displayName,
           username: profile.username,
-        }).save();
+        });
 
+        await user.save();
         done(null, user);
       } catch (err) {
         const errorMessage =
