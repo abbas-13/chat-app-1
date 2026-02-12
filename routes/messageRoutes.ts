@@ -6,13 +6,13 @@ import Message from "../models/message";
 
 export default (app: import("express").Express) => {
   app.get(
-    "/api/messages/:conversationId",
+    "/api/messages/:recipientId",
     requireLogin,
     async (req: Request, res: Response) => {
       try {
         const senderId = (req.user as any)._id;
         const recipientId = new mongoose.Types.ObjectId(
-          (req.params as any).conversationId,
+          (req.params as any).recipientId,
         );
 
         const participants = [senderId, recipientId].sort((a, b) =>
