@@ -1,5 +1,5 @@
 import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { Input } from "@/components/ui/input";
@@ -16,13 +16,21 @@ import {
   MenubarTrigger,
 } from "./ui/menubar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { debounce } from "@/lib/utils";
+import type { TConversation, TUser } from "@/assets/types";
+import { ConversationContext } from "@/context/conversationContext";
 
 export const CustomSidebar = () => {
   const { user, setUser } = useContext(AuthContext);
+  const { setSelectedConversation } = useContext(ConversationContext);
   const { toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [currConversations, setCurrConversations] = useState<TConversation[]>(
+    [],
+  );
+  const [searchedUsers, setSearchedUsers] = useState<TUser[]>([]);
 
   const toggleTheme = (isChecked: boolean) => {
     const selectedTheme = isChecked ? "light" : "dark";
@@ -57,6 +65,58 @@ export const CustomSidebar = () => {
     }
   };
 
+  const searchUser = async (query: string) => {
+    try {
+      if (!query.trim()) return;
+
+      const response = await fetch(
+        `/api/searchUsers?q=${encodeURIComponent(query)}`,
+        {
+          method: "GET",
+          credentials: "include",
+        },
+      );
+
+      const users = await response.json();
+      setSearchedUsers(users);
+    } catch (err) {
+      const errorData = err instanceof Error ? err : "Unkown error occurred";
+      console.error(errorData);
+    }
+  };
+
+  const debouncedSearch = debounce(searchUser, 300);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const response = await fetch("/api/conversations", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error(errorData);
+        }
+
+        const conversations = await response.json();
+        setCurrConversations(conversations);
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error
+            ? err
+            : "Unkown error occurred, couldn't fetch conversations";
+        console.error(errorMessage);
+      }
+    };
+
+    fetchConversations();
+  }, []);
+
   const sidebarContent = () => {
     return (
       <div className="h-full flex flex-col">
@@ -69,9 +129,62 @@ export const CustomSidebar = () => {
         <div className="flex flex-col justify-between h-[calc(100%-54px)] p-2">
           <div className="flex flex-col gap-2">
             <Input
+              onChange={(event) => debouncedSearch(event.target.value)}
               placeholder="search in chats"
               className=" border-2 border-white focus-visible:ring-1 active:outline-2 active:outline-[#292966] bg-[#f8f8ff]"
             />
+            {searchedUsers.length > 0
+              ? searchedUsers?.map((item: TUser, index: number) => (
+                  <div key={index}>
+                    <div
+                      key={item._id}
+                      onClick={() => {
+                        setSelectedConversation({
+                          recipientId: item._id,
+                          recipientName: item.name || item.displayName,
+                        });
+                        setSearchedUsers([]);
+                      }}
+                      className="rounded-md h-[56px] flex flex-col hover:bg-background justify-center cursor-pointer"
+                    >
+                      <h4 className="text-md px-2 font-medium tracking-tight text-left">
+                        {item.displayName || item.name}
+                      </h4>
+                    </div>
+                    <div className="border border-gray-300 justify-self-center"></div>
+                  </div>
+                ))
+              : currConversations?.map((item: TConversation) => {
+                  const recipient = item.participants.filter(
+                    (item) => item._id !== user._id,
+                  )[0];
+                  console.log(item);
+                  return (
+                    <div key={item._id}>
+                      <div
+                        onClick={() => {
+                          setSelectedConversation({
+                            recipientId: recipient._id,
+                            recipientName:
+                              recipient.name || recipient.displayName,
+                          });
+                        }}
+                        className="rounded-md h-[56px] max-h-[56px] px-3 flex flex-col gap-1 hover:bg-background justify-center cursor-pointer"
+                      >
+                        <h4 className="text-mdfont-medium tracking-tight text-left">
+                          {recipient.name || recipient.displayName}
+                        </h4>
+                        <span className="text-[10px] text-gray-500 text-left">
+                          {item.lastMessage.senderId === user._id
+                            ? "You: "
+                            : ""}
+                          {item.lastMessage.text}
+                        </span>
+                      </div>
+                      <div className="border border-gray-300 mt-[2px] w-full justify-self-center"></div>
+                    </div>
+                  );
+                })}
           </div>
           <Menubar className="bg-secondary! p-0">
             <MenubarMenu>

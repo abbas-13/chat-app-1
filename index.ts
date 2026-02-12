@@ -4,13 +4,15 @@ import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 
 import "dotenv/config";
 import "./models/user.js";
 import "./services/passport.js";
-import { fileURLToPath } from "url";
 import authRoutes from "./routes/authRoutes";
 import passport from "passport";
+import conversationRoutes from "./routes/conversationRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,6 +55,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 authRoutes(app);
+conversationRoutes(app);
+messageRoutes(app);
 
 app.get("health", (req, res) => {
   res.status(200).json({ status: "OK", timeStamp: new Date() });

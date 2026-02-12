@@ -1,29 +1,42 @@
 import { Route, Routes } from "react-router";
+import { useState } from "react";
 
+import "./App.css";
+import { ThemeProvider } from "./components/ui/themeProvider";
 import { Appshell } from "./components/appshell";
 import { Dashboard } from "./components/dashboard";
-import { ThemeProvider } from "./components/ui/themeProvider";
 import { Login } from "./components/loginPage";
 import { SignUp } from "./components/signupPage";
 import { Auth } from "./components/auth";
-import "./App.css";
+import { ConversationContext } from "./context/conversationContext";
+import type { TSelectedConversation } from "./assets/types";
 
 function App() {
+  const [selectedConversation, setSelectedConversation] =
+    useState<TSelectedConversation>({
+      recipientId: "",
+      recipientName: "",
+    });
+
   return (
     <ThemeProvider defaultTheme="light">
       <Auth>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Appshell>
-                <Dashboard />
-              </Appshell>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
+        <ConversationContext.Provider
+          value={{ selectedConversation, setSelectedConversation }}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Appshell>
+                  <Dashboard />
+                </Appshell>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Routes>
+        </ConversationContext.Provider>
       </Auth>
     </ThemeProvider>
   );
