@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import requireLogin from "../middlewares/requireLogin";
 import Conversation from "../models/conversation";
 import User from "../models/user";
-import { getReceiverSocketId } from "../services/socket-io";
 
 export default (app: import("express").Express) => {
   app.get(
