@@ -9,7 +9,8 @@ import { Login } from "./components/loginPage";
 import { SignUp } from "./components/signupPage";
 import { Auth } from "./components/auth";
 import { ConversationContext } from "./context/conversationContext";
-import type { TSelectedConversation } from "./assets/types";
+import type { TMessage, TSelectedConversation } from "./assets/types";
+import type { Socket } from "socket.io-client";
 
 function App() {
   const [selectedConversation, setSelectedConversation] =
@@ -17,12 +18,32 @@ function App() {
       recipientId: "",
       recipientName: "",
     });
+  const [messages, setMessages] = useState<TMessage[]>([]);
+
+  const subscribeToMessage = (recipientId: string, socket: Socket) => {
+    if (!recipientId) return;
+
+    socket?.on("newMessage", (newMessage) => {
+      setMessages((prev) => [...prev, newMessage]);
+    });
+  };
+
+  const unsubscribeFromMessages = (socket: Socket) => {
+    if (socket) socket.off("newMessage");
+  };
 
   return (
     <ThemeProvider defaultTheme="light">
       <Auth>
         <ConversationContext.Provider
-          value={{ selectedConversation, setSelectedConversation }}
+          value={{
+            selectedConversation,
+            setSelectedConversation,
+            messages,
+            setMessages,
+            subscribeToMessage,
+            unsubscribeFromMessages,
+          }}
         >
           <Routes>
             <Route

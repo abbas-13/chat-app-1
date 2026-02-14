@@ -1,14 +1,14 @@
+import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
-import { useNavigate } from "react-router";
-import { useState } from "react";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
-import { toast } from "sonner";
 
 interface TSignUpForm {
   email: string;

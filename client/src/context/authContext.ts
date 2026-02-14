@@ -9,4 +9,7 @@ export const AuthContext = createContext<TUserContext>({
     displayName: "",
   },
   setUser: () => {},
+  onlineUsers: [],
+  socket: undefined,
+  disconnectSocket: () => {},
 });

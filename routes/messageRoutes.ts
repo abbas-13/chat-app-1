@@ -3,6 +3,7 @@ import requireLogin from "../middlewares/requireLogin";
 import mongoose from "mongoose";
 import Conversation from "../models/conversation";
 import Message from "../models/message";
+import { getReceiverSocketId, io } from "../services/socket-io";
 
 export default (app: import("express").Express) => {
   app.get(
@@ -82,6 +83,9 @@ export default (app: import("express").Express) => {
         });
         await message.save();
 
+        await message.populate("senderId", "name displayName email");
+        await message.populate("readBy.userId", "name displayName");
+
         // updating conversation, last message and date
         conversation.lastMessage = message._id;
         conversation.updatedAt = new Date();
@@ -90,6 +94,24 @@ export default (app: import("express").Express) => {
         // populating the conversation with details of the users, and the last message
         await conversation.populate("participants", "name displayName email");
         await conversation.populate("lastMessage", "text createdAt senderId");
+
+        const senderSocketId = getReceiverSocketId(senderId.toString());
+        const receiverSocketId = getReceiverSocketId(recipientId);
+
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("newMessage", message);
+          io.to(receiverSocketId).emit(
+            "conversationUpdated",
+            conversation.toObject(),
+          );
+        }
+
+        if (senderSocketId) {
+          io.to(senderSocketId).emit(
+            "conversationUpdated",
+            conversation.toObject(),
+          );
+        }
 
         res.status(201).json({
           message,

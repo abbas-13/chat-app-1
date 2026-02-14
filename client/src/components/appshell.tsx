@@ -11,7 +11,9 @@ export const Appshell = ({ children }: TAppshellProps) => {
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
       <CustomSidebar />
-      <main className="bg-[#e6e6ff] w-full outline-none">{children}</main>
+      <main className="bg-[#e6e6ff] w-full h-screen outline-none">
+        {children}
+      </main>
     </SidebarProvider>
   );
 };
