@@ -21,7 +21,7 @@ import type { TConversation, TUser } from "@/assets/types";
 import { ConversationContext } from "@/context/conversationContext";
 
 export const CustomSidebar = () => {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, socket, disconnectSocket } = useContext(AuthContext);
   const { setSelectedConversation } = useContext(ConversationContext);
   const { toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
@@ -54,6 +54,7 @@ export const CustomSidebar = () => {
           email: "",
           displayName: "",
         });
+        disconnectSocket();
         setTheme("light");
         navigate("/login");
       } else {
@@ -115,18 +116,36 @@ export const CustomSidebar = () => {
     };
 
     fetchConversations();
+
+    if (socket) {
+      const handleConversationUpdate = (updatedConversation: TConversation) => {
+        setCurrConversations((prev) =>
+          prev.map((conv: TConversation) =>
+            conv._id.toString() === updatedConversation._id.toString()
+              ? updatedConversation
+              : conv,
+          ),
+        );
+      };
+
+      socket.on("conversationUpdated", handleConversationUpdate);
+
+      return () => {
+        socket.off("conversationUpdated", handleConversationUpdate);
+      };
+    }
   }, []);
 
   const sidebarContent = () => {
     return (
       <div className="h-full flex flex-col">
-        <div className="flex gap-[0.6rem] h-[54px] justify-center w-full items-center">
+        <div className="flex gap-[0.6rem] h-[58px] justify-center w-full items-center">
           <img style={{ height: "32px" }} src="/social-ly-logo.svg" />
           <h1 className="bg-gradient-to-r from-[#5C5C99] to-[#292966] bg-clip-text text-transparent text-[30px] font-semibold">
             social.ly
           </h1>
         </div>
-        <div className="flex flex-col justify-between h-[calc(100%-54px)] p-2">
+        <div className="flex flex-col justify-between h-[calc(100%-58px)] p-2">
           <div className="flex flex-col gap-2">
             <Input
               onChange={(event) => debouncedSearch(event.target.value)}
@@ -158,7 +177,6 @@ export const CustomSidebar = () => {
                   const recipient = item.participants.filter(
                     (item) => item._id !== user._id,
                   )[0];
-                  console.log(item);
                   return (
                     <div key={item._id}>
                       <div

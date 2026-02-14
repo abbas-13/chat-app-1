@@ -1,4 +1,4 @@
-import passport from "passport";
+import passport, { Profile } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -7,11 +7,28 @@ import bcrypt from "bcryptjs";
 
 const User = mongoose.model("User");
 
-passport.serializeUser((user, done) => {
+interface IUser extends mongoose.Document {
+  _id: mongoose.Types.ObjectId;
+  googleId?: string;
+  githubId?: string;
+  displayName?: string;
+  name?: string;
+  email?: string;
+  local?: {
+    email: string;
+    password: string;
+  };
+}
+
+interface VerifyCallback {
+  (error: any, user?: IUser | false | null): void;
+}
+
+passport.serializeUser((user: any, done: (err: any, id: string) => void) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (id: string, done: VerifyCallback) => {
   const user = await User.findById(id);
   done(null, user);
 });
@@ -19,12 +36,17 @@ passport.deserializeUser(async (id, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: "/auth/google/callback",
       proxy: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (
+      _accessToken: string,
+      _refreshToken: string,
+      profile: Profile,
+      done,
+    ) => {
       try {
         const existingUser = await User.findOne({ googleId: profile.id });
 
@@ -35,8 +57,8 @@ passport.use(
         const user = new User({
           googleId: profile.id,
           displayName: profile.displayName,
-          name: profile.name.givenName,
-          email: profile._json.email,
+          name: profile.name?.givenName,
+          email: profile.emails && profile.emails[0].value,
         });
 
         await user.save();
@@ -45,7 +67,7 @@ passport.use(
         const errorMessage =
           err instanceof Error ? err : "Unkown error occurred";
         console.log(errorMessage);
-        done(err, null);
+        done(err, false);
       }
     },
   ),
@@ -54,12 +76,17 @@ passport.use(
 passport.use(
   new GitHubStrategy(
     {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientID: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       callbackURL: "/auth/github/callback",
       proxy: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (
+      _accessToken: string,
+      _refreshToken: string,
+      profile: Profile,
+      done: VerifyCallback,
+    ) => {
       try {
         const existingUser = await User.findOne({ githubId: profile.id });
 
@@ -102,7 +129,7 @@ passport.use(
         const errorMessage =
           err instanceof Error ? err : "Unkown error occurred";
         console.log(errorMessage);
-        done(err, null);
+        done(err, undefined);
       }
     },
   ),

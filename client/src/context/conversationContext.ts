@@ -7,4 +7,8 @@ export const ConversationContext = createContext<TSelectedConversationContext>({
     recipientName: "",
   },
   setSelectedConversation: () => {},
+  messages: [],
+  setMessages: () => {},
+  subscribeToMessage: () => {},
+  unsubscribeFromMessages: () => {},
 });

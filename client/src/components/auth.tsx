@@ -1,8 +1,9 @@
-import type { TUser } from "@/assets/types";
-import { AuthContext } from "@/context/authContext";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { io, Socket } from "socket.io-client";
 
+import type { ServerToClientEvents, TUser } from "@/assets/types";
+import { AuthContext } from "@/context/authContext";
 interface TAuthProps {
   children: React.ReactNode;
 }
@@ -16,6 +17,10 @@ export const Auth = ({ children }: TAuthProps) => {
     email: "",
     displayName: "",
   });
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const [socket, setSocket] = useState<
+    Socket<ServerToClientEvents> | undefined
+  >(undefined);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -43,8 +48,38 @@ export const Auth = ({ children }: TAuthProps) => {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    if (user._id && !socket) {
+      const newSocket = io("http://localhost:8000", { withCredentials: true });
+
+      newSocket.on("getOnlineUsers", (userIds: string[]) => {
+        setOnlineUsers(userIds);
+      });
+
+      newSocket.connect();
+
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSocket(newSocket);
+    }
+  }, [user._id, socket]);
+
+  const disconnectSocket = () => {
+    if (socket?.connected) {
+      setSocket(undefined);
+      socket?.disconnect();
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        onlineUsers,
+        socket,
+        disconnectSocket,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -9,15 +9,15 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 import "./models/user.js";
 import "./services/passport.js";
+import "./services/socket-io.js";
 import authRoutes from "./routes/authRoutes";
 import passport from "passport";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import { app, io, server } from "./services/socket-io.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-const app = express();
 
 app.use(express.json());
 
@@ -32,22 +32,24 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(
-  session({
-    secret: process.env.COOKIE_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient() as any,
-    }),
-    cookie: {
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-      maxAge: 24 * 3600 * 1000,
-    },
+const sessionConfig = session({
+  secret: process.env.COOKIE_KEY!,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    client: mongoose.connection.getClient() as any,
   }),
-);
+  cookie: {
+    secure: "auto",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    httpOnly: true,
+    maxAge: 24 * 3600 * 1000,
+  },
+});
+
+app.use(sessionConfig);
+
+io.engine.use(sessionConfig);
 
 const PORT = process.env.PORT || 8000;
 
@@ -70,10 +72,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(PORT, (error) => {
-  if (!error) {
-    console.log("Server running successfully, and listening on port " + PORT);
-  } else {
-    console.log("Server did not start. ERROR: ", error);
-  }
+server.listen(PORT, () => {
+  console.log("Server running successfully, and listening on port " + PORT);
 });
