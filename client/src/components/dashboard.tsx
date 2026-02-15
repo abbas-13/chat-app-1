@@ -3,12 +3,12 @@ import { SendHorizonal } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { Navbar } from "./navbar";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ConversationContext } from "@/context/conversationContext";
 import { AuthContext } from "@/context/authContext";
 import type { TMessage } from "@/assets/types";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface TSendMessage {
   message: string;
@@ -53,7 +53,6 @@ export const Dashboard = () => {
       const { message } = await response.json();
 
       setMessages((prev) => {
-        console.log(prev);
         return [...prev, message];
       });
       reset();
@@ -115,31 +114,35 @@ export const Dashboard = () => {
             messages.map((item: TMessage) => (
               <div
                 key={item._id}
-                className={`min-h-[36px]  max-w-1/2 rounded-full flex items-center mb-2 p-2 px-4 ${user._id === item.senderId._id ? "self-end bg-foreground text-[#e6e6ff]" : "self-start bg-[#e6e6ff] text-foreground"}`}
+                className={`max-w-[60%] w-fit rounded-[24px] flex items-center mb-2 p-2 px-4 ${
+                  user._id === item.senderId._id
+                    ? "self-end bg-foreground text-[#e6e6ff]"
+                    : "self-start bg-[#e6e6ff] text-foreground"
+                }`}
               >
-                {item.text}
+                <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
+                  {item.text}
+                </p>
               </div>
             ))}
         </div>
         <form
           onSubmit={handleSubmit(sendMessage)}
-          className="w-full bg-[#e6e6ff] px-2 border-t-2 border-foreground max-h-[58px] h-[58px] flex justify-center items-center"
+          className="w-full bg-[#e6e6ff] px-2 border-t-2 border-foreground max-h-[58px] h-[58px] flex gap-2 justify-center items-center"
         >
-          <InputGroup className="rounded-full border-foreground bg-background">
-            <InputGroupInput
-              {...register("message")}
-              placeholder="send message"
-              name="message"
-            />
-            <InputGroupAddon align="inline-end">
-              <Button
-                type="submit"
-                className="bg-transparent hover:bg-transparent p-0"
-              >
-                <SendHorizonal size={24} color="#292966" />
-              </Button>
-            </InputGroupAddon>
-          </InputGroup>
+          <Input
+            {...register("message")}
+            placeholder="send message"
+            name="message"
+            className="bg-background shadow-none rounded-[24px] active:border active:border-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            autoComplete="off"
+          />
+          <Button
+            type="submit"
+            className="bg-background rounded-full hover:bg-white focus-visible:border-none! focus-visible:ring-none! focus-visible:ring-0! active:bg-background border border-input active:border-foreground"
+          >
+            <SendHorizonal size={28} color="#292966" />
+          </Button>
         </form>
       </div>
     </>

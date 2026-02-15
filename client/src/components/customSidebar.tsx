@@ -1,5 +1,5 @@
-import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
+import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import { Input } from "@/components/ui/input";
@@ -116,7 +116,9 @@ export const CustomSidebar = () => {
     };
 
     fetchConversations();
+  }, []);
 
+  useEffect(() => {
     if (socket) {
       const handleConversationUpdate = (updatedConversation: TConversation) => {
         setCurrConversations((prev) =>
@@ -134,7 +136,51 @@ export const CustomSidebar = () => {
         socket.off("conversationUpdated", handleConversationUpdate);
       };
     }
-  }, []);
+  }, [socket]);
+
+  const formatMessageDate = (dateString: string): string => {
+    const messageDate = new Date(dateString);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const messageDay = new Date(
+      messageDate.getFullYear(),
+      messageDate.getMonth(),
+      messageDate.getDate(),
+    );
+
+    const timeDiff = now.getTime() - messageDate.getTime();
+    if (
+      timeDiff < 24 * 60 * 60 * 1000 &&
+      messageDay.getTime() === today.getTime()
+    ) {
+      return messageDate.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    }
+
+    const daysDiff = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+    if (daysDiff <= 6) {
+      const days = [
+        "Yesterday",
+        "Saturday",
+        "Friday",
+        "Thursday",
+        "Wednesday",
+        "Tuesday",
+      ];
+      return days[daysDiff - 1];
+    }
+
+    return messageDate
+      .toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+      .replace(/\//g, "/");
+  };
 
   const sidebarContent = () => {
     return (
@@ -177,6 +223,7 @@ export const CustomSidebar = () => {
                   const recipient = item.participants.filter(
                     (item) => item._id !== user._id,
                   )[0];
+
                   return (
                     <div key={item._id}>
                       <div
@@ -189,10 +236,15 @@ export const CustomSidebar = () => {
                         }}
                         className="rounded-md h-[56px] max-h-[56px] px-3 flex flex-col gap-1 hover:bg-background justify-center cursor-pointer"
                       >
-                        <h4 className="text-mdfont-medium tracking-tight text-left">
-                          {recipient.name || recipient.displayName}
-                        </h4>
-                        <span className="text-[10px] text-gray-500 text-left">
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-mdfont-medium tracking-tight text-left">
+                            {recipient.name || recipient.displayName}
+                          </h4>
+                          <span className="text-[10px] text-gray-500">
+                            {formatMessageDate(item.updatedAt)}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-gray-500 text-left truncate">
                           {item.lastMessage.senderId === user._id
                             ? "You: "
                             : ""}
