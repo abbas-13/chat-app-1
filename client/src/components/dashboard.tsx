@@ -112,41 +112,28 @@ export const Dashboard = () => {
         >
           {messages?.length > 0 &&
             messages.map((item: TMessage) => (
-              <>
-                <div
-                  key={item._id}
-                  className={`max-w-[60%] w-fit flex flex-col mb-2 ${
-                    user._id === item.senderId._id
-                      ? "self-end items-end"
-                      : "self-start items-start"
+              <div
+                className={` max-w-[60%] w-fit flex flex-col mb-2 rounded-[24px] p-2 px-4 flex flex-col gap-[2px] ${
+                  user._id === item.senderId._id
+                    ? "bg-foreground text-[#e6e6ff] self-end items-end"
+                    : "bg-[#e6e6ff] text-foreground self-start items-start"
+                }`}
+              >
+                <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
+                  {item.text}
+                </p>
+                <span
+                  className={`w-full text-[8px] text-gray-400 ${
+                    user._id === item.senderId._id ? "text-end" : "text-start"
                   }`}
                 >
-                  <div
-                    className={`rounded-[24px] p-2 px-4 flex flex-col gap-[2px] ${
-                      user._id === item.senderId._id
-                        ? "bg-foreground text-[#e6e6ff]"
-                        : "bg-[#e6e6ff] text-foreground"
-                    }`}
-                  >
-                    <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
-                      {item.text}
-                    </p>
-                    <span
-                      className={`w-full text-[8px] text-gray-400 ${
-                        user._id === item.senderId._id
-                          ? "text-end"
-                          : "text-start"
-                      }`}
-                    >
-                      {new Date(item.createdAt).toLocaleTimeString("en-US", {
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </>
+                  {new Date(item.createdAt).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </span>
+              </div>
             ))}
         </div>
         <form
