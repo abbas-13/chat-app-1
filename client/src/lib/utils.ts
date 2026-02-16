@@ -19,7 +19,7 @@ export const debounce = <T extends unknown[]>(
   };
 };
 
-export const formateConvoDate = (dateString: string): string => {
+export const formatConvoDate = (dateString: string): string => {
   const messageDate = new Date(dateString);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());

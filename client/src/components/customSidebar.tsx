@@ -15,7 +15,7 @@ import {
   MenubarTrigger,
 } from "./ui/menubar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { debounce, formateConvoDate } from "@/lib/utils";
+import { debounce, formatConvoDate } from "@/lib/utils";
 import { AuthContext } from "@/context/authContext";
 import { ConversationContext } from "@/context/conversationContext";
 import type { TConversation, TUser } from "@/assets/types";
@@ -199,7 +199,7 @@ export const CustomSidebar = () => {
                                 {recipient.name || recipient.displayName}
                               </h4>
                               <span className="text-[10px] text-gray-500">
-                                {formateConvoDate(item.updatedAt)}
+                                {formatConvoDate(item.updatedAt)}
                               </span>
                             </div>
                             <span className="text-[10px] text-gray-500 text-left truncate">
