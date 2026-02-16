@@ -107,23 +107,46 @@ export const Dashboard = () => {
       <div className="w-full bg-background h-[calc(100%-58px)] flex flex-col">
         <div
           id="messages-container"
-          className="w-full flex flex-1 flex-col p-2 overflow-y-auto max-h-[calc(100vh-116px)]"
+          className="w-full flex flex-1 flex-col p-2 px-3 overflow-y-auto max-h-[calc(100vh-116px)]"
           ref={scrollRef}
         >
-          {messages.length > 0 &&
+          {messages?.length > 0 &&
             messages.map((item: TMessage) => (
-              <div
-                key={item._id}
-                className={`max-w-[60%] w-fit rounded-[24px] flex items-center mb-2 p-2 px-4 ${
-                  user._id === item.senderId._id
-                    ? "self-end bg-foreground text-[#e6e6ff]"
-                    : "self-start bg-[#e6e6ff] text-foreground"
-                }`}
-              >
-                <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
-                  {item.text}
-                </p>
-              </div>
+              <>
+                <div
+                  key={item._id}
+                  className={`max-w-[60%] w-fit flex flex-col mb-2 ${
+                    user._id === item.senderId._id
+                      ? "self-end items-end"
+                      : "self-start items-start"
+                  }`}
+                >
+                  <div
+                    className={`rounded-[24px] p-2 px-4 flex flex-col gap-[2px] ${
+                      user._id === item.senderId._id
+                        ? "bg-foreground text-[#e6e6ff]"
+                        : "bg-[#e6e6ff] text-foreground"
+                    }`}
+                  >
+                    <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
+                      {item.text}
+                    </p>
+                    <span
+                      className={`w-full text-[8px] text-gray-400 ${
+                        user._id === item.senderId._id
+                          ? "text-end"
+                          : "text-start"
+                      }`}
+                    >
+                      {new Date(item.createdAt).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </span>
+                  </div>
+                </div>
+              </>
             ))}
         </div>
         <form
