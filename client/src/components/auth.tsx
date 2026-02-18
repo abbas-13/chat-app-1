@@ -16,6 +16,7 @@ export const Auth = ({ children }: TAuthProps) => {
     name: "",
     email: "",
     displayName: "",
+    displayPicture: "",
   });
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [socket, setSocket] = useState<

@@ -1,70 +1,28 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { LogIn, LogOut, Menu, Moon, Sun, UserCircleIcon } from "lucide-react";
+
+import { Menu } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { useTheme } from "@/components/ui/themeProvider";
 import { Sidebar, SidebarContent, useSidebar } from "./ui/sidebar";
-import { Switch } from "./ui/switch";
-import { Avatar } from "./ui/avatar";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "./ui/menubar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { debounce, formatConvoDate } from "@/lib/utils";
 import { AuthContext } from "@/context/authContext";
 import { ConversationContext } from "@/context/conversationContext";
 import type { TConversation, TUser } from "@/assets/types";
+import { ProfileEditDialog } from "./profileEditDialog";
+import { SidebarProfileMenu } from "./sidebarProfileMenu";
 
 export const CustomSidebar = () => {
-  const { user, setUser, socket, disconnectSocket } = useContext(AuthContext);
+  const { user, socket } = useContext(AuthContext);
   const { setSelectedConversation } = useContext(ConversationContext);
   const { toggleSidebar } = useSidebar();
-  const { theme, setTheme } = useTheme();
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [currConversations, setCurrConversations] = useState<TConversation[]>(
     [],
   );
   const [searchedUsers, setSearchedUsers] = useState<TUser[]>([]);
-
-  const toggleTheme = (isChecked: boolean) => {
-    const selectedTheme = isChecked ? "light" : "dark";
-    setTheme(selectedTheme);
-  };
-
-  const logout = async () => {
-    try {
-      const response = await fetch("/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setUser({
-          _id: "",
-          name: "",
-          email: "",
-          displayName: "",
-        });
-        disconnectSocket();
-        setTheme("light");
-        navigate("/login");
-      } else {
-        console.error("Logout failed");
-      }
-    } catch (err) {
-      const errorData = err instanceof Error ? err : "Unkown error occurred";
-      console.error(errorData);
-    }
-  };
+  const [isProfileDialogOpen, setIsProfileDialogOpen] =
+    useState<boolean>(false);
 
   const searchUser = async (query: string) => {
     try {
@@ -214,77 +172,17 @@ export const CustomSidebar = () => {
                       );
                     })}
               </div>
-              <Menubar className="bg-secondary! p-0">
-                <MenubarMenu>
-                  <MenubarTrigger className="flex justify-between items-center w-full data-[state=open]:bg-background! p-0 h-full px-2 focus:bg-background!s">
-                    <p className="text-foreground text-sm">
-                      {user.name || user.displayName}
-                    </p>
-                    <Avatar className="flex justify-end items-center max-h-max">
-                      <UserCircleIcon
-                        size={20}
-                        color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                      />
-                    </Avatar>
-                  </MenubarTrigger>
-                  <MenubarContent
-                    align="center"
-                    className="w-[var(--radix-menubar-trigger-width)] min-w-0"
-                  >
-                    <MenubarItem className="flex justify-between w-full focus:bg-background">
-                      {user._id?.length > 0 ? (
-                        <div
-                          onClick={logout}
-                          className="flex justify-between w-full items-center"
-                        >
-                          <p className="text-foreground text-sm">Logout</p>
-                          <LogOut
-                            color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                            size={20}
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() => {
-                            navigate("/login");
-                          }}
-                          className="flex justify-between w-full items-center"
-                        >
-                          <p className="text-foreground text-sm">Login</p>
-                          <LogIn
-                            color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                            size={20}
-                          />
-                        </div>
-                      )}
-                    </MenubarItem>
-                    <MenubarItem className="flex justify-between w-full focus:bg-background">
-                      <p className="text-foreground text-sm">Theme</p>
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                        }}
-                        className="flex justify-around text-xs gap-2 items-center"
-                      >
-                        <Moon size={18} />
-                        <Switch
-                          className="data-[state=checked]:bg-foreground data-[state=unchecked]:bg-foreground"
-                          checked={theme === "light" ? true : false}
-                          onCheckedChange={(checked) => {
-                            event?.stopPropagation();
-                            toggleTheme(checked);
-                          }}
-                        />
-                        <Sun size={18} />
-                      </div>
-                    </MenubarItem>
-                  </MenubarContent>
-                </MenubarMenu>
-              </Menubar>
+              <SidebarProfileMenu
+                setIsProfileDialogOpen={setIsProfileDialogOpen}
+              />
             </div>
           </div>
         </SidebarContent>
       </Sidebar>
+      <ProfileEditDialog
+        isProfileDialogOpen={isProfileDialogOpen}
+        setIsProfileDialogOpen={setIsProfileDialogOpen}
+      />
       {isMobile && <Menu onClick={toggleSidebar} />}
     </div>
   );

@@ -113,13 +113,13 @@ export const Dashboard = () => {
           {messages?.length > 0 &&
             messages.map((item: TMessage) => (
               <div
-                className={` max-w-[60%] w-fit flex flex-col mb-2 rounded-[24px] p-2 px-4 flex flex-col gap-[2px] ${
+                className={`max-w-[60%] w-fit flex flex-col mb-2 rounded-[18px] p-2 px-4 flex flex-col gap-[2px] ${
                   user._id === item.senderId._id
                     ? "bg-foreground text-[#e6e6ff] self-end items-end"
-                    : "bg-[#e6e6ff] text-foreground self-start items-start"
+                    : "bg-[#e6e6ff] text-black self-start items-start"
                 }`}
               >
-                <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
+                <p className="text-[14px] text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
                   {item.text}
                 </p>
                 <span

@@ -6,6 +6,7 @@ export interface TUser {
   email: string;
   name: string;
   displayName: string;
+  displayPicture: string;
 }
 
 export interface TMessage {
