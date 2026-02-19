@@ -36,7 +36,11 @@ export default (app: import("express").Express) => {
       try {
         const query = req.query.q as string;
         const recipients = await User.find({
-          email: { $regex: query, $options: "i" },
+          $or: [
+            { email: { $regex: query, $options: "i" } },
+            { name: { $regex: query, $options: "i" } },
+            { displayName: { $regex: query, $options: "i" } },
+          ],
           _id: { $ne: (req.user as any)._id },
         })
           .select("name displayName email status displayPicture")

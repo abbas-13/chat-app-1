@@ -69,11 +69,11 @@ export const SidebarProfileMenu = ({
     }
   };
   return (
-    <Menubar className="bg-secondary! p-0">
+    <Menubar className="bg-secondary! p-0 h-12! border-none hover:bg-white!">
       <MenubarMenu>
-        <MenubarTrigger className="flex justify-between items-center w-full data-[state=open]:bg-background! p-0 h-full px-2 focus:bg-background!s">
+        <MenubarTrigger className="flex justify-between cursor-pointer items-center w-full data-[state=open]:bg-white! h-full px-2 focus:bg-secondary!">
           <p className="text-foreground text-sm">
-            {user.name || user.displayName}
+            {user.displayName ?? user.name}
           </p>
           <Avatar size="sm" className="flex justify-end items-center max-h-max">
             {user.displayPicture ? (

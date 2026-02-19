@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Info } from "lucide-react";
+import { ArrowLeft, Info } from "lucide-react";
 
 import { ConversationContext } from "@/context/conversationContext";
 import { AuthContext } from "@/context/authContext";
@@ -10,16 +10,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router";
 
 export const Navbar = () => {
   const { selectedConversation } = useContext(ConversationContext);
   const { onlineUsers } = useContext(AuthContext);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   return (
-    <div className="w-full h-[58px] border-b-2 border-b-white bg-secondary grid grid-cols-[1fr_1fr] items-center px-2">
-      <div className="justify-self-end flex flex-col">
+    <div className="w-full h-[58px] border-b-2 border-b-primary bg-background dark:bg-background! flex justify-between items-center px-2">
+      <div>{isMobile && <ArrowLeft onClick={() => navigate("/")} />}</div>
+      <div className="flex flex-col">
         <h3 className="text-[20px] font-medium tracking-tight">
-          {selectedConversation.recipientName}{" "}
+          {selectedConversation.recipientDisplayName ??
+            selectedConversation.recipientName}
         </h3>
         <span className="text-xs">
           {onlineUsers.length > 0 &&

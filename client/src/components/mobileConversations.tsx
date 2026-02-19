@@ -1,13 +1,11 @@
-import { useContext, useEffect, useState } from "react";
-
-import { Sidebar, SidebarContent } from "./ui/sidebar";
 import { debounce } from "@/lib/utils";
-import { AuthContext } from "@/context/authContext";
-import type { TConversation, TUser } from "@/assets/types";
-import { ProfileEditDialog } from "./profileEditDialog";
 import { CustomSidebarContent } from "./customSidebarContent";
+import { useContext, useEffect, useState } from "react";
+import type { TConversation, TUser } from "@/assets/types";
+import { AuthContext } from "@/context/authContext";
+import { ProfileEditDialog } from "./profileEditDialog";
 
-export const CustomSidebar = () => {
+export const MobileConversations = () => {
   const { socket } = useContext(AuthContext);
   const [currConversations, setCurrConversations] = useState<TConversation[]>(
     [],
@@ -15,7 +13,6 @@ export const CustomSidebar = () => {
   const [searchedUsers, setSearchedUsers] = useState<TUser[]>([]);
   const [isProfileDialogOpen, setIsProfileDialogOpen] =
     useState<boolean>(false);
-
   const searchUser = async (query: string) => {
     try {
       if (!query.trim()) return;
@@ -89,22 +86,18 @@ export const CustomSidebar = () => {
   }, [socket]);
 
   return (
-    <div className="h-full flex">
-      <Sidebar>
-        <SidebarContent className="border-r-2 md:border-primary bg-background">
-          <CustomSidebarContent
-            debouncedSearch={debouncedSearch}
-            searchedUsers={searchedUsers}
-            setSearchedUsers={setSearchedUsers}
-            currConversations={currConversations}
-            setIsProfileDialogOpen={setIsProfileDialogOpen}
-          />
-        </SidebarContent>
-      </Sidebar>
+    <>
+      <CustomSidebarContent
+        debouncedSearch={debouncedSearch}
+        searchedUsers={searchedUsers}
+        setSearchedUsers={setSearchedUsers}
+        currConversations={currConversations}
+        setIsProfileDialogOpen={setIsProfileDialogOpen}
+      />
       <ProfileEditDialog
         isProfileDialogOpen={isProfileDialogOpen}
         setIsProfileDialogOpen={setIsProfileDialogOpen}
       />
-    </div>
+    </>
   );
 };
