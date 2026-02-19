@@ -6,6 +6,8 @@ export interface TUser {
   email: string;
   name: string;
   displayName: string;
+  displayPicture: string;
+  status: string;
 }
 
 export interface TMessage {
@@ -48,6 +50,8 @@ export interface TConversation {
     email: string;
     name: string;
     _id: string;
+    displayPicture: string;
+    status: string;
   }[];
   updatedAt: string;
   _id: string;
@@ -56,6 +60,9 @@ export interface TConversation {
 export interface TSelectedConversation {
   recipientId: string;
   recipientName: string;
+  recipientDisplayPicture: string;
+  recipientStatus: string;
+  recipientDisplayName: string;
 }
 
 export interface TSelectedConversationContext {

@@ -104,57 +104,66 @@ export const Dashboard = () => {
   return (
     <>
       {!isMobile && <Navbar />}
-      <div className="w-full bg-background h-[calc(100%-58px)] flex flex-col">
-        <div
-          id="messages-container"
-          className="w-full flex flex-1 flex-col p-2 px-3 overflow-y-auto max-h-[calc(100vh-116px)]"
-          ref={scrollRef}
-        >
-          {messages?.length > 0 &&
-            messages.map((item: TMessage) => (
-              <div
-                className={` max-w-[60%] w-fit flex flex-col mb-2 rounded-[24px] p-2 px-4 flex flex-col gap-[2px] ${
-                  user._id === item.senderId._id
-                    ? "bg-foreground text-[#e6e6ff] self-end items-end"
-                    : "bg-[#e6e6ff] text-foreground self-start items-start"
-                }`}
-              >
-                <p className="text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
-                  {item.text}
-                </p>
-                <span
-                  className={`w-full text-[8px] text-gray-400 ${
-                    user._id === item.senderId._id ? "text-end" : "text-start"
+      {selectedConversation.recipientId.length > 0 ? (
+        <div className="w-full bg-background h-[calc(100%-58px)] flex flex-col">
+          <div
+            id="messages-container"
+            className="w-full flex flex-1 flex-col p-2 px-3 overflow-y-auto max-h-[calc(100vh-116px)]"
+            ref={scrollRef}
+          >
+            {messages?.length > 0 &&
+              messages.map((item: TMessage) => (
+                <div
+                  className={`max-w-[60%] w-fit flex flex-col mb-2 rounded-[18px] p-2 px-4 flex flex-col gap-[2px] ${
+                    user._id === item.senderId._id
+                      ? "bg-foreground text-[#e6e6ff] self-end items-end"
+                      : "bg-[#e6e6ff] text-black self-start items-start"
                   }`}
                 >
-                  {new Date(item.createdAt).toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true,
-                  })}
-                </span>
-              </div>
-            ))}
-        </div>
-        <form
-          onSubmit={handleSubmit(sendMessage)}
-          className="w-full bg-[#e6e6ff] px-2 border-t-2 border-foreground max-h-[58px] h-[58px] flex gap-2 justify-center items-center"
-        >
-          <Input
-            {...register("message")}
-            placeholder="send message"
-            name="message"
-            className="bg-background shadow-none rounded-[24px] active:border active:border-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-            autoComplete="off"
-          />
-          <Button
-            type="submit"
-            className="bg-background rounded-full hover:bg-white focus-visible:border-none! focus-visible:ring-none! focus-visible:ring-0! active:bg-background border border-input active:border-foreground"
+                  <p className="text-[14px] text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
+                    {item.text}
+                  </p>
+                  <span
+                    className={`w-full text-[8px] text-gray-400 ${
+                      user._id === item.senderId._id ? "text-end" : "text-start"
+                    }`}
+                  >
+                    {new Date(item.createdAt).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </span>
+                </div>
+              ))}
+          </div>
+          <form
+            onSubmit={handleSubmit(sendMessage)}
+            className="w-full bg-[#e6e6ff] px-2 border-t-2 border-foreground max-h-[58px] h-[58px] flex gap-2 justify-center items-center"
           >
-            <SendHorizonal size={28} color="#292966" />
-          </Button>
-        </form>
-      </div>
+            <Input
+              {...register("message")}
+              placeholder="send message"
+              name="message"
+              className="bg-background shadow-none rounded-[24px] active:border active:border-foreground focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              autoComplete="off"
+            />
+            <Button
+              type="submit"
+              className="bg-background rounded-full hover:bg-white focus-visible:border-none! focus-visible:ring-none! focus-visible:ring-0! active:bg-background border border-input active:border-foreground"
+            >
+              <SendHorizonal size={28} color="#292966" />
+            </Button>
+          </form>
+        </div>
+      ) : (
+        <div className="flex flex-col bg-background gap-[0.6rem] max-h-[calc(100%-58px)] justify-center h-full w-full items-center">
+          <img className="w-[150px]" src="/social-ly-logo.svg" />
+          <h1 className="bg-gradient-to-r from-[#5C5C99] to-[#292966] bg-clip-text text-transparent text-[72px] font-semibold">
+            social.ly
+          </h1>
+        </div>
+      )}
     </>
   );
 };

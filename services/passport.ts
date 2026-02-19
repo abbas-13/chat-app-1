@@ -18,6 +18,7 @@ interface IUser extends mongoose.Document {
     email: string;
     password: string;
   };
+  displayPicture?: string;
 }
 
 interface VerifyCallback {

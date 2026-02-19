@@ -15,6 +15,8 @@ import passport from "passport";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import { app, io, server } from "./services/socket-io.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -59,6 +61,8 @@ app.use(passport.session());
 authRoutes(app);
 conversationRoutes(app);
 messageRoutes(app);
+uploadRoutes(app);
+userRoutes(app);
 
 app.get("health", (req, res) => {
   res.status(200).json({ status: "OK", timeStamp: new Date() });

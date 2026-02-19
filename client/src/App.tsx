@@ -11,12 +11,16 @@ import { Auth } from "./components/auth";
 import { ConversationContext } from "./context/conversationContext";
 import type { TMessage, TSelectedConversation } from "./assets/types";
 import type { Socket } from "socket.io-client";
+import { Toaster } from "sonner";
 
 function App() {
   const [selectedConversation, setSelectedConversation] =
     useState<TSelectedConversation>({
       recipientId: "",
       recipientName: "",
+      recipientDisplayName: "",
+      recipientDisplayPicture: "",
+      recipientStatus: "",
     });
   const [messages, setMessages] = useState<TMessage[]>([]);
 
@@ -45,6 +49,7 @@ function App() {
             unsubscribeFromMessages,
           }}
         >
+          <Toaster />
           <Routes>
             <Route
               path="/"
