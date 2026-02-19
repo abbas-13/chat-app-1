@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
-import requireLogin from "../middlewares/requireLogin";
-import Conversation from "../models/conversation";
-import User from "../models/user";
+import { type Request, type Response } from "express";
+
+import requireLogin from "../middlewares/requireLogin.ts";
+import Conversation from "../models/conversation.ts";
+import User from "../models/user.ts";
 
 export default (app: import("express").Express) => {
   app.get(

@@ -1,7 +1,8 @@
 import passport from "passport";
-import { NextFunction, Request, Response } from "express";
-import User from "../models/user";
+import { type NextFunction, type Request, type Response } from "express";
 import bcrypt from "bcryptjs";
+
+import User from "../models/user.ts";
 
 export default (app: import("express").Express) => {
   app.get(
