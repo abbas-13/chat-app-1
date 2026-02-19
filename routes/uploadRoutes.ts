@@ -1,7 +1,8 @@
 import multer from "multer";
-import User from "../models/user";
 import { v2 as cloudinary } from "cloudinary";
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
+
+import User from "../models/user.ts";
 
 cloudinary.config({
   cloud_name: "dvigsh8tl",

@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
-import requireLogin from "../middlewares/requireLogin.js";
-import User from "../models/user.js";
+import { type Request, type Response } from "express";
 import z from "zod";
 import { fromZodError } from "zod-validation-error";
+
+import User from "../models/user.ts";
+import requireLogin from "../middlewares/requireLogin.ts";
 
 const ProfileUpdateFormSchema = z.object({
   displayName: z

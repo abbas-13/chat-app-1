@@ -1,4 +1,4 @@
-import passport, { Profile } from "passport";
+import passport, { type Profile } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import { Strategy as LocalStrategy } from "passport-local";

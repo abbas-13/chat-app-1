@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
-import requireLogin from "../middlewares/requireLogin";
+import { type Request, type Response } from "express";
 import mongoose from "mongoose";
-import Conversation from "../models/conversation";
-import Message from "../models/message";
-import { getReceiverSocketId, io } from "../services/socket-io";
+
+import requireLogin from "../middlewares/requireLogin.ts";
+import Conversation from "../models/conversation.ts";
+import Message from "../models/message.ts";
+import { getReceiverSocketId, io } from "../services/socket-io.ts";
 
 export default (app: import("express").Express) => {
   app.get(

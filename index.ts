@@ -7,16 +7,16 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import "dotenv/config";
-import "./models/user.js";
-import "./services/passport.js";
-import "./services/socket-io.js";
-import authRoutes from "./routes/authRoutes";
+import "./models/user.ts";
+import "./services/passport.ts";
+import "./services/socket-io.ts";
+import authRoutes from "./routes/authRoutes.ts";
 import passport from "passport";
-import conversationRoutes from "./routes/conversationRoutes.js";
-import messageRoutes from "./routes/messageRoutes.js";
-import { app, io, server } from "./services/socket-io.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
+import conversationRoutes from "./routes/conversationRoutes.ts";
+import messageRoutes from "./routes/messageRoutes.ts";
+import { app, io, server } from "./services/socket-io.ts";
+import uploadRoutes from "./routes/uploadRoutes.ts";
+import userRoutes from "./routes/userRoutes.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

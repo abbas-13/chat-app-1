@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import express from "express";
-import { socketAuthMiddleware } from "../middlewares/socketAuthMiddleware.js";
+
+import { socketAuthMiddleware } from "../middlewares/socketAuthMiddleware.ts";
 
 declare module "socket.io" {
   interface Socket {
