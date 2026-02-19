@@ -52,7 +52,9 @@ export const Auth = ({ children }: TAuthProps) => {
 
   useEffect(() => {
     if (user._id && !socket) {
-      const newSocket = io("http://localhost:8000", { withCredentials: true });
+      const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+        withCredentials: true,
+      });
 
       newSocket.on("getOnlineUsers", (userIds: string[]) => {
         setOnlineUsers(userIds);
