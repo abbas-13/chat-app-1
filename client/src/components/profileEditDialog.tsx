@@ -7,12 +7,13 @@ import {
   type SetStateAction,
 } from "react";
 import AvatarEditor from "react-avatar-editor";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { AuthContext } from "@/context/authContext";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { toast } from "sonner";
 
 interface TProfileP {
   image: File | string;
@@ -122,9 +123,16 @@ export const ProfileEditDialog = ({
     data,
   ) => {
     try {
+      if (
+        data.displayName === user.displayName &&
+        data.status === user.status
+      ) {
+        setIsProfileDialogOpen(false);
+        return;
+      }
       const profileBody = {
         displayName: data.displayName,
-        status: data.displayName,
+        status: data.status,
       };
 
       const response = await fetch("/api/user", {
@@ -138,8 +146,12 @@ export const ProfileEditDialog = ({
 
       if (!response.ok) {
         const errorMessage = await response.json();
-        console.error(errorMessage);
+        toast.error(errorMessage, {
+          position: "top-center",
+        });
       }
+
+      setIsProfileDialogOpen(false);
     } catch (err) {
       const errorData = err instanceof Error ? err : "Unkown error occurred";
       console.error(errorData);
@@ -200,6 +212,7 @@ export const ProfileEditDialog = ({
                 </label>
                 <Input
                   autoComplete="off"
+                  defaultValue={user.status || ""}
                   {...register("status")}
                   className="focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none shadow-none border-b-1! border-b-gray-400! border-background focus-visible:border-b-1! focus-visible:border-b-gray-400! focus-visible:border-background"
                 />

@@ -7,6 +7,8 @@ export const AuthContext = createContext<TUserContext>({
     name: "",
     email: "",
     displayName: "",
+    displayPicture: "",
+    status: "",
   },
   setUser: () => {},
   onlineUsers: [],

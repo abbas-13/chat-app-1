@@ -55,6 +55,7 @@ export const SidebarProfileMenu = ({
           email: "",
           displayName: "",
           displayPicture: "",
+          status: "",
         });
         disconnectSocket();
         setTheme("light");

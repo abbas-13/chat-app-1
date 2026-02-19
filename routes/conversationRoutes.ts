@@ -12,7 +12,10 @@ export default (app: import("express").Express) => {
         const conversations = await Conversation.find({
           participants: (req.user as any)._id,
         })
-          .populate("participants", "name displayName email")
+          .populate(
+            "participants",
+            "name displayName email status displayPicture",
+          )
           .populate("lastMessage", "text createdAt senderId")
           .sort({ updatedAt: -1 })
           .lean();
@@ -36,7 +39,7 @@ export default (app: import("express").Express) => {
           email: { $regex: query, $options: "i" },
           _id: { $ne: (req.user as any)._id },
         })
-          .select("name displayName email")
+          .select("name displayName email status displayPicture")
           .limit(10);
 
         res.json(recipients);

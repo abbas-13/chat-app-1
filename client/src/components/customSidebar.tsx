@@ -123,6 +123,9 @@ export const CustomSidebar = () => {
                             setSelectedConversation({
                               recipientId: item._id,
                               recipientName: item.name || item.displayName,
+                              recipientDisplayPicture: item.displayPicture,
+                              recipientStatus: item.status,
+                              recipientDisplayName: item.displayName,
                             });
                             setSearchedUsers([]);
                           }}
@@ -148,6 +151,10 @@ export const CustomSidebar = () => {
                                 recipientId: recipient._id,
                                 recipientName:
                                   recipient.name || recipient.displayName,
+                                recipientDisplayPicture:
+                                  recipient.displayPicture,
+                                recipientStatus: recipient.status,
+                                recipientDisplayName: recipient.displayName,
                               });
                             }}
                             className="rounded-md h-[56px] max-h-[56px] px-3 flex flex-col gap-1 hover:bg-background justify-center cursor-pointer"
