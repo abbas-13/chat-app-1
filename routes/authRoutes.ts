@@ -16,7 +16,9 @@ export default (app: import("express").Express) => {
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/signup" }),
     (req: Request, res: Response) => {
-      res.redirect("http://localhost:3000/");
+      res.redirect(
+        process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000/",
+      );
     },
   );
 
@@ -31,7 +33,9 @@ export default (app: import("express").Express) => {
     "/auth/github/callback",
     passport.authenticate("github", { failureRedirect: "/signup" }),
     (req: Request, res: Response) => {
-      res.redirect("http://localhost:3000/");
+      res.redirect(
+        process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000/",
+      );
     },
   );
 
