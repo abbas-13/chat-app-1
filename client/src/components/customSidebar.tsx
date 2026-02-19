@@ -161,7 +161,7 @@ export const CustomSidebar = () => {
                           >
                             <div className="flex justify-between items-center">
                               <h4 className="text-mdfont-medium tracking-tight text-left">
-                                {recipient.name || recipient.displayName}
+                                {recipient.displayName ?? recipient.displayName}
                               </h4>
                               <span className="text-[10px] text-gray-500">
                                 {formatConvoDate(item.updatedAt)}

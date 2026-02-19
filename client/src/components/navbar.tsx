@@ -19,7 +19,8 @@ export const Navbar = () => {
     <div className="w-full h-[58px] border-b-2 border-b-white bg-secondary grid grid-cols-[1fr_1fr] items-center px-2">
       <div className="justify-self-end flex flex-col">
         <h3 className="text-[20px] font-medium tracking-tight">
-          {selectedConversation.recipientName}{" "}
+          {selectedConversation.recipientDisplayName ??
+            selectedConversation.recipientName}
         </h3>
         <span className="text-xs">
           {onlineUsers.length > 0 &&
