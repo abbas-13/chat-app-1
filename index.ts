@@ -27,7 +27,7 @@ await mongoose.connect(process.env.MONGODB_URI || "");
 console.log("MongoDB Connected!");
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://chat-app-1-5mmu.onrender.com"],
   credentials: true,
   optionsSuccessStatus: 200,
 };
