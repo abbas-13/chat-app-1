@@ -181,7 +181,7 @@ export const ProfileEditDialog = ({
                   className="w-[50px] h-auto md:w-[100px] rounded-full"
                 />
                 <span
-                  className="cursor-pointer text-[12px] text-blue-600 underline underline-offset-2"
+                  className="cursor-pointer text-[12px] text-blue-600 dark:text-blue-400 underline underline-offset-2"
                   onClick={() => setIsAvatarEditModalOpen(true)}
                 >
                   Edit
@@ -195,7 +195,7 @@ export const ProfileEditDialog = ({
               onSubmit={handleSubmit(onProfileEditFormSubmit)}
               className="w-full flex items-center flex-col gap-3"
             >
-              <div className="grid grid-cols-[35%_65%] w-full justify-between  items-center">
+              <div className="grid grid-cols-[35%_65%] w-full justify-between items-center">
                 <label className="text-normal text-[14px] font-semibold">
                   Display Name:
                 </label>
@@ -203,7 +203,7 @@ export const ProfileEditDialog = ({
                   autoComplete="off"
                   {...register("displayName")}
                   defaultValue={user.displayName || ""}
-                  className="focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none shadow-none border-b-1! border-b-gray-400! border-background focus-visible:border-b-1! focus-visible:border-b-gray-400! focus-visible:border-background"
+                  className="focus-visible:ring-0 bg-background! focus-visible:ring-offset-0 rounded-none shadow-none border-b-1! border-b-gray-400! border-background focus-visible:border-b-1! focus-visible:border-b-gray-400! focus-visible:border-background"
                 />
               </div>
               <div className="grid grid-cols-[35%_65%] w-full justify-between items-center">
@@ -214,12 +214,12 @@ export const ProfileEditDialog = ({
                   autoComplete="off"
                   defaultValue={user.status || ""}
                   {...register("status")}
-                  className="focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none shadow-none border-b-1! border-b-gray-400! border-background focus-visible:border-b-1! focus-visible:border-b-gray-400! focus-visible:border-background"
+                  className="focus-visible:ring-0 bg-background! focus-visible:ring-offset-0 rounded-none shadow-none border-b-1! border-b-gray-400! border-background focus-visible:border-b-1! focus-visible:border-b-gray-400! focus-visible:border-background"
                 />
               </div>
               <Button
                 type="submit"
-                className="bg-[#4343a7] w-1/2 mt-4 text-[15px] hover:bg-[#5d5bbd]"
+                className="bg-[#4343a7] dark:bg-foreground text-background! dark:text-secondary! dark:hover:bg-white! w-1/2 mt-4 text-[15px] hover:bg-[#5d5bbd]"
               >
                 Save
               </Button>
@@ -275,7 +275,7 @@ export const ProfileEditDialog = ({
             />
             <Button
               onClick={handleProfilePictureUpdate}
-              className="bg-[#4343a7] text-[15px] w-2/3 justify-self-center hover:bg-[#5d5bbd]"
+              className="bg-[#4343a7] w-2/3 justify-self-center dark:bg-foreground text-background! dark:text-secondary! dark:hover:bg-white! w-1/2 mt-4 text-[15px] hover:bg-[#5d5bbd]"
             >
               Save
             </Button>

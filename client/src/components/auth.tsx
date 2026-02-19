@@ -45,10 +45,10 @@ export const Auth = ({ children }: TAuthProps) => {
         console.error(errorMessage, "SOME ERROR");
       }
     };
-    if (!["/login", "/signup"].includes(pathname)) {
+    if (!["/login", "/signup"].includes(pathname) && !user._id.length) {
       fetchUser();
     }
-  }, [pathname]);
+  }, [pathname, user._id]);
 
   useEffect(() => {
     if (user._id && !socket) {

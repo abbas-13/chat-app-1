@@ -12,6 +12,8 @@ import { ConversationContext } from "./context/conversationContext";
 import type { TMessage, TSelectedConversation } from "./assets/types";
 import type { Socket } from "socket.io-client";
 import { Toaster } from "sonner";
+import { useIsMobile } from "./hooks/use-mobile";
+import { MobileConversations } from "./components/mobileConversations";
 
 function App() {
   const [selectedConversation, setSelectedConversation] =
@@ -23,6 +25,7 @@ function App() {
       recipientStatus: "",
     });
   const [messages, setMessages] = useState<TMessage[]>([]);
+  const isMobile = useIsMobile();
 
   const subscribeToMessage = (recipientId: string, socket: Socket) => {
     if (!recipientId) return;
@@ -51,14 +54,29 @@ function App() {
         >
           <Toaster />
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Appshell>
-                  <Dashboard />
-                </Appshell>
-              }
-            />
+            {!isMobile && (
+              <Route
+                path="/"
+                element={
+                  <Appshell>
+                    <Dashboard />
+                  </Appshell>
+                }
+              />
+            )}
+            {isMobile && (
+              <>
+                <Route path="/" element={<MobileConversations />} />
+                <Route
+                  path="/chat"
+                  element={
+                    <div className="bg-[#e6e6ff] w-full h-screen outline-none">
+                      <Dashboard />
+                    </div>
+                  }
+                />
+              </>
+            )}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>

@@ -12,6 +12,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TSignInForm {
   email: string;
@@ -26,6 +27,7 @@ export const Login = () => {
   } = useForm<TSignInForm>();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const onSubmit: SubmitHandler<TSignInForm> = async (data) => {
     try {
@@ -44,7 +46,8 @@ export const Login = () => {
         console.error(errorMessage);
       }
 
-      navigate("/");
+      if (isMobile) navigate("/");
+      else navigate("/");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Unkown error occurred";
@@ -132,7 +135,7 @@ export const Login = () => {
             </div>
             <Button
               type="submit"
-              className="bg-[#2097f3] w-5/6 h-[36px] text-[15px] cursor-pointer hover:bg-[#FFFFFF] hover:border-2 hover:border-[#2097f3] active:bg-[#2097f3] active:text-white hover:text-black active:outline-2 active:outline-[#85C7F8] hover:shadow-lg active:shadow-none active:border-1 active:border-white text-white"
+              className="bg-[#4343a7] text-[15px] dark:bg-foreground dark:text-secondary! w-5/6 h-[36px] cursor-pointer hover:bg-[#5d5bbd] hover:text-white! hover:border-2 hover:border-[#4343a7] active:bg-foreground active:text-white hover:text-black active:outline-2 active:outline-[#85C7F8] hover:shadow-lg active:shadow-none active:border-1 active:border-white text-white"
               variant="outline"
             >
               Sign In
@@ -191,7 +194,7 @@ export const Login = () => {
           </div>
           <a
             href={"/signup"}
-            className="text-sm underline mt-4 font-[400] cursor-pointer underline-offset-2 text-blue-600 dark:text-blue-300 tracking-tight first:mt-0"
+            className="text-sm underline mt-4 font-[400] cursor-pointer underline-offset-2 text-foreground dark:text-blue-300 tracking-tight first:mt-0"
           >
             New user? Sign up here
           </a>
