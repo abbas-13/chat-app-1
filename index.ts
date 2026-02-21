@@ -27,31 +27,49 @@ await mongoose.connect(process.env.MONGODB_URI || "");
 console.log("MongoDB Connected!");
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://chat-app-1-5mmu.onrender.com"],
+  origin:
+    process.env.NODE_ENV === "production"
+      ? "https://chat-app-1-5mmu.onrender.com"
+      : "http://localhost:3000",
   credentials: true,
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
 
-const sessionConfig = session({
-  secret: process.env.COOKIE_KEY!,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    client: mongoose.connection.getClient() as any,
+app.use(
+  session({
+    secret: process.env.COOKIE_KEY!,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      client: mongoose.connection.getClient() as any,
+    }),
+    cookie: {
+      secure: "auto",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      httpOnly: true,
+      maxAge: 24 * 3600 * 1000,
+    },
   }),
-  cookie: {
-    secure: "auto",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    httpOnly: true,
-    maxAge: 24 * 3600 * 1000,
-  },
-});
+);
 
-app.use(sessionConfig);
-
-io.engine.use(sessionConfig);
+io.engine.use(
+  session({
+    secret: process.env.COOKIE_KEY!,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      client: mongoose.connection.getClient() as any,
+    }),
+    cookie: {
+      secure: "auto",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      httpOnly: true,
+      maxAge: 24 * 3600 * 1000,
+    },
+  }),
+);
 
 const PORT = process.env.PORT || 8000;
 
