@@ -26,11 +26,14 @@ interface VerifyCallback {
 }
 
 passport.serializeUser((user: any, done: (err: any, id: string) => void) => {
+  console.log({ user, line: "passport.ts - 29" });
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id: string, done: VerifyCallback) => {
   const user = await User.findById(id);
+  console.log({ user, id, line: "passport.ts - 35" });
+
   done(null, user);
 });
 
@@ -50,6 +53,7 @@ passport.use(
     ) => {
       try {
         const existingUser = await User.findOne({ googleId: profile.id });
+        console.log({ existingUser, line: "passport.ts - 56" });
 
         if (existingUser) {
           return done(null, existingUser);
@@ -61,6 +65,8 @@ passport.use(
           name: profile.name?.givenName,
           email: profile.emails && profile.emails[0].value,
         });
+
+        console.log({ user, line: "passport.ts - 69" });
 
         await user.save();
         done(null, user);

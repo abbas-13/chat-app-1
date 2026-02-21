@@ -44,6 +44,7 @@ export const Auth = ({ children }: TAuthProps) => {
         }
 
         const userData = await response.json();
+        console.log({ userData, line: "Auth.tsx - 47" });
         setUser(userData);
       } catch (err) {
         const errorMessage =
@@ -56,6 +57,8 @@ export const Auth = ({ children }: TAuthProps) => {
       fetchUser();
     }
   }, [pathname, user._id, isMobile]);
+
+  console.log({ user, line: "Auth.tsx - 61" });
 
   useEffect(() => {
     if (user._id && !socket) {
