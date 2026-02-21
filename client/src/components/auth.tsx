@@ -4,6 +4,7 @@ import { io, Socket } from "socket.io-client";
 
 import type { ServerToClientEvents, TUser } from "@/assets/types";
 import { AuthContext } from "@/context/authContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 interface TAuthProps {
   children: React.ReactNode;
 }
@@ -11,6 +12,7 @@ interface TAuthProps {
 export const Auth = ({ children }: TAuthProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const isMobile = useIsMobile();
   const [user, setUser] = useState<TUser>({
     _id: "",
     name: "",
@@ -25,6 +27,10 @@ export const Auth = ({ children }: TAuthProps) => {
   >(undefined);
 
   useEffect(() => {
+    if (!isMobile && pathname === "/conversations") {
+      navigate("/");
+    }
+
     const fetchUser = async () => {
       try {
         const response = await fetch("/api/currentUser", {
@@ -45,10 +51,11 @@ export const Auth = ({ children }: TAuthProps) => {
         console.error(errorMessage, "SOME ERROR");
       }
     };
-    if (!["/login", "/signup"].includes(pathname) && !user._id.length) {
+
+    if (!["/login", "/signup"].includes(pathname) && user._id.length < 1) {
       fetchUser();
     }
-  }, [pathname, user._id]);
+  }, [pathname, user._id, isMobile]);
 
   useEffect(() => {
     if (user._id && !socket) {

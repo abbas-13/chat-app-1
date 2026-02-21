@@ -21,7 +21,9 @@ export const Navbar = () => {
 
   return (
     <div className="w-full h-[58px] border-b-2 border-b-primary bg-background dark:bg-background! flex justify-between items-center px-2">
-      <div>{isMobile && <ArrowLeft onClick={() => navigate("/")} />}</div>
+      <div>
+        {isMobile && <ArrowLeft onClick={() => navigate("/conversations")} />}
+      </div>
       <div className="flex flex-col">
         <h3 className="text-[20px] font-medium tracking-tight">
           {selectedConversation.recipientDisplayName ??
@@ -47,7 +49,7 @@ export const Navbar = () => {
               <div className="flex justify-center w-full flex-col">
                 <div className="p-2 flex items-center gap-4">
                   <div className="flex w-full justify-center gap-2">
-                    <div className="w-[100px] relative">
+                    <div className="min-w-[100px] relative">
                       <img
                         className="w-[100px] rounded-full"
                         src={selectedConversation.recipientDisplayPicture}

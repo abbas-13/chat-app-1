@@ -59,7 +59,7 @@ export const CustomSidebarContent = ({
                       });
                       setSearchedUsers([]);
                       if (isMobile) {
-                        navigate("/chat");
+                        navigate("/");
                       }
                     }}
                     className="rounded-md h-[56px] flex flex-col hover:bg-background justify-center cursor-pointer"
@@ -89,16 +89,16 @@ export const CustomSidebarContent = ({
                           recipientDisplayName: recipient.displayName,
                         });
                         if (isMobile) {
-                          navigate("/chat");
+                          navigate("/");
                         }
                       }}
-                      className="rounded-md h-[56px] max-h-[56px] px-3 flex flex-col gap-1 hover:bg-background justify-center cursor-pointer"
+                      className="rounded-md h-[56px] max-h-[56px] px-2 flex flex-col gap-1 hover:bg-background justify-center cursor-pointer"
                     >
                       <div className="flex justify-between items-center">
                         <h4 className="text-md font-medium tracking-tight text-left text-foreground">
                           {recipient.displayName ?? recipient.displayName}
                         </h4>
-                        <span className="text-[10px] text-gray-600">
+                        <span className="text-[10px] text-gray-600 dark:text-gray-400">
                           {formatConvoDate(item.updatedAt)}
                         </span>
                       </div>
@@ -114,7 +114,6 @@ export const CustomSidebarContent = ({
         </div>
         <div>
           <div className="border border-gray-300 my-1 w-full justify-self-center"></div>
-
           <SidebarProfileMenu setIsProfileDialogOpen={setIsProfileDialogOpen} />
         </div>
       </div>
