@@ -54,7 +54,22 @@ function App() {
         >
           <Toaster />
           <Routes>
-            {!isMobile && (
+            {isMobile ? (
+              <>
+                <Route
+                  path="/"
+                  element={
+                    <div className="bg-[#e6e6ff] w-full h-screen outline-none">
+                      <Dashboard />
+                    </div>
+                  }
+                />
+                <Route
+                  path="/conversations"
+                  element={<MobileConversations />}
+                />
+              </>
+            ) : (
               <Route
                 path="/"
                 element={
@@ -63,19 +78,6 @@ function App() {
                   </Appshell>
                 }
               />
-            )}
-            {isMobile && (
-              <>
-                <Route path="/" element={<MobileConversations />} />
-                <Route
-                  path="/chat"
-                  element={
-                    <div className="bg-[#e6e6ff] w-full h-screen outline-none">
-                      <Dashboard />
-                    </div>
-                  }
-                />
-              </>
             )}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

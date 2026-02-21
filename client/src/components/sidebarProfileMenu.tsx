@@ -21,6 +21,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "./ui/menubar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TSidebarProfileMenuProps {
   setIsProfileDialogOpen: Dispatch<SetStateAction<boolean>>;
@@ -30,7 +31,7 @@ export const SidebarProfileMenu = ({
   setIsProfileDialogOpen,
 }: TSidebarProfileMenuProps) => {
   const { user, setUser, disconnectSocket } = useContext(AuthContext);
-
+  const isMobile = useIsMobile();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const toggleTheme = (isChecked: boolean) => {
@@ -75,7 +76,10 @@ export const SidebarProfileMenu = ({
           <p className="text-foreground text-sm">
             {user.displayName ?? user.name}
           </p>
-          <Avatar size="sm" className="flex justify-end items-center max-h-max">
+          <Avatar
+            size={`${isMobile ? "default" : "sm"}`}
+            className="flex justify-end items-center max-h-max"
+          >
             {user.displayPicture ? (
               <img src={user.displayPicture} />
             ) : (
