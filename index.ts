@@ -21,6 +21,7 @@ import userRoutes from "./routes/userRoutes.ts";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+app.set("trust proxy", 1);
 app.use(express.json());
 
 await mongoose.connect(process.env.MONGODB_URI || "");
