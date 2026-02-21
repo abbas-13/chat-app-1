@@ -15,7 +15,10 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://chat-app-1-5mmu.onrender.com"],
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://chat-app-1-5mmu.onrender.com"
+        : "http://localhost:3000",
     credentials: true,
     optionsSuccessStatus: 200,
   },
