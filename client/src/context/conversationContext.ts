@@ -8,6 +8,7 @@ export const ConversationContext = createContext<TSelectedConversationContext>({
     recipientDisplayPicture: "",
     recipientStatus: "",
     recipientDisplayName: "",
+    _id: "",
   },
   setSelectedConversation: () => {},
   messages: [],

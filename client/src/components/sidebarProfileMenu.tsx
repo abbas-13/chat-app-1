@@ -2,17 +2,10 @@ import { useNavigate } from "react-router";
 import { useTheme } from "./ui/themeProvider";
 import { useContext, type Dispatch, type SetStateAction } from "react";
 import { AuthContext } from "@/context/authContext";
-import {
-  LogIn,
-  LogOut,
-  Moon,
-  Sun,
-  UserCircleIcon,
-  UserRoundCog,
-} from "lucide-react";
+import { LogIn, LogOut, Moon, Sun, UserRoundCog } from "lucide-react";
 
 import { Switch } from "./ui/switch";
-import { Avatar } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   Menubar,
   MenubarContent,
@@ -80,14 +73,13 @@ export const SidebarProfileMenu = ({
             size={`${isMobile ? "default" : "sm"}`}
             className="flex justify-end items-center max-h-max"
           >
-            {user.displayPicture ? (
-              <img src={user.displayPicture} />
-            ) : (
-              <UserCircleIcon
-                size={20}
-                color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-              />
-            )}
+            <AvatarImage
+              src={user.displayPicture || undefined}
+              alt={user.displayName || user.name || "User"}
+            />
+            <AvatarFallback className="text-2xl">
+              {(user.displayName || user.name || "?").charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </MenubarTrigger>
         <MenubarContent
@@ -137,7 +129,6 @@ export const SidebarProfileMenu = ({
                 className="data-[state=checked]:bg-foreground data-[state=unchecked]:bg-foreground"
                 checked={theme === "light" ? true : false}
                 onCheckedChange={(checked) => {
-                  event?.stopPropagation();
                   toggleTheme(checked);
                 }}
               />

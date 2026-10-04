@@ -93,7 +93,7 @@ passport.use(
         const existingUser = await User.findOne({ githubId: profile.id });
 
         if (existingUser) {
-          done(null, existingUser);
+          return done(null, existingUser);
         }
 
         const user = new User({

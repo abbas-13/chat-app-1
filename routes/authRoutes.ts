@@ -67,16 +67,32 @@ export default (app: import("express").Express) => {
         });
       });
     } catch (err) {
-      console.log(err);
+      res.json(err);
     }
   });
 
-  app.post(
-    "/auth/login",
-    passport.authenticate("local", (req: Request, res: Response) => {
-      return res.json({ user: req.user });
-    }),
-  );
+  app.post("/auth/login", (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate(
+      "local",
+      (
+        err: Error | null,
+        user: any,
+        info: { message?: string } | undefined,
+      ) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!user)
+          return res
+            .status(400)
+            .json({ error: info?.message ?? "Invalid credentials" });
+
+        req.logIn(user, (loginErr) => {
+          if (loginErr)
+            return res.status(500).json({ error: loginErr.message });
+          return res.json({ user });
+        });
+      },
+    )(req, res, next);
+  });
 
   app.get("/api/currentUser", (req: Request, res: Response) => {
     if (req.user) res.status(200).send(req.user);

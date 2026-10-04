@@ -45,10 +45,9 @@ export const CustomSidebarContent = ({
             className=" border-1 border-primary focus-visible:ring-1 active:outline-2 active:outline-[#292966] bg-[#f8f8ff]"
           />
           {searchedUsers.length > 0
-            ? searchedUsers?.map((item: TUser, index: number) => (
-                <div key={index}>
+            ? searchedUsers?.map((item: TUser) => (
+                <div key={item._id}>
                   <div
-                    key={item._id}
                     onClick={() => {
                       setSelectedConversation({
                         recipientId: item._id,
@@ -56,6 +55,7 @@ export const CustomSidebarContent = ({
                         recipientDisplayPicture: item.displayPicture,
                         recipientStatus: item.status,
                         recipientDisplayName: item.displayName,
+                        _id: "",
                       });
                       setSearchedUsers([]);
                       if (isMobile) {
@@ -73,7 +73,7 @@ export const CustomSidebarContent = ({
               ))
             : currConversations?.map((item: TConversation) => {
                 const recipient = item.participants.filter(
-                  (item) => item._id !== user._id,
+                  (participant) => participant._id !== user._id,
                 )[0];
 
                 return (
@@ -87,6 +87,7 @@ export const CustomSidebarContent = ({
                           recipientDisplayPicture: recipient.displayPicture,
                           recipientStatus: recipient.status,
                           recipientDisplayName: recipient.displayName,
+                          _id: item._id,
                         });
                         if (isMobile) {
                           navigate("/");
@@ -96,14 +97,16 @@ export const CustomSidebarContent = ({
                     >
                       <div className="flex justify-between items-center">
                         <h4 className="text-md font-medium tracking-tight text-left text-foreground">
-                          {recipient.displayName ?? recipient.displayName}
+                          {recipient.displayName || recipient.name}
                         </h4>
                         <span className="text-[10px] text-gray-600 dark:text-gray-400">
                           {formatConvoDate(item.updatedAt)}
                         </span>
                       </div>
                       <span className="text-[10px] text-gray-600 dark:text-gray-400 text-left truncate">
-                        {item.lastMessage.senderId === user._id ? "You: " : ""}
+                        {String(item.lastMessage.senderId) === user._id
+                          ? "You: "
+                          : ""}
                         {item.lastMessage.text}
                       </span>
                     </div>

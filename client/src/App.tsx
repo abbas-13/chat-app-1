@@ -23,15 +23,24 @@ function App() {
       recipientDisplayName: "",
       recipientDisplayPicture: "",
       recipientStatus: "",
+      _id: "",
     });
   const [messages, setMessages] = useState<TMessage[]>([]);
   const isMobile = useIsMobile();
+
+  const senderIdOf = (s: string | { _id: string }) =>
+    typeof s === "string" ? s : s._id;
 
   const subscribeToMessage = (recipientId: string, socket: Socket) => {
     if (!recipientId) return;
 
     socket?.on("newMessage", (newMessage) => {
-      setMessages((prev) => [...prev, newMessage]);
+      if (senderIdOf(newMessage.senderId) !== recipientId) return;
+
+      setMessages((prev) => {
+        if (prev.some((m) => m._id === newMessage._id)) return prev;
+        return [...prev, newMessage];
+      });
     });
   };
 

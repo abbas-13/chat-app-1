@@ -9,7 +9,6 @@ import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TSignUpForm {
   email: string;
@@ -20,7 +19,6 @@ interface TSignUpForm {
 
 export const SignUp = () => {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const {
     register,
     handleSubmit,
@@ -50,8 +48,7 @@ export const SignUp = () => {
         throw new Error(errorData.error || `HTTP ${response.status}`);
       }
 
-      if (isMobile) navigate("/");
-      else navigate("/");
+      navigate("/");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Unkown error occurred";

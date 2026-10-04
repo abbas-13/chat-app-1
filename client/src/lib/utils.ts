@@ -29,11 +29,11 @@ export const formatConvoDate = (dateString: string): string => {
     messageDate.getDate(),
   );
 
-  const timeDiff = now.getTime() - messageDate.getTime();
-  if (
-    timeDiff < 24 * 60 * 60 * 1000 &&
-    messageDay.getTime() === today.getTime()
-  ) {
+  const daysDiff = Math.round(
+    (today.getTime() - messageDay.getTime()) / (24 * 60 * 60 * 1000),
+  );
+
+  if (daysDiff <= 0) {
     return messageDate.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
@@ -41,24 +41,25 @@ export const formatConvoDate = (dateString: string): string => {
     });
   }
 
-  const daysDiff = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+  if (daysDiff === 1) return "Yesterday";
+
   if (daysDiff <= 6) {
     const days = [
-      "Yesterday",
-      "Saturday",
-      "Friday",
-      "Thursday",
-      "Wednesday",
+      "Sunday",
+      "Monday",
       "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
     ];
-    return days[daysDiff - 1];
+
+    return days[messageDate.getDay()];
   }
 
-  return messageDate
-    .toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-    .replace(/\//g, "/");
+  return messageDate.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 };

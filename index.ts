@@ -83,7 +83,7 @@ messageRoutes(app);
 uploadRoutes(app);
 userRoutes(app);
 
-app.get("health", (req, res) => {
+app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timeStamp: new Date() });
 });
 

@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { io, Socket } from "socket.io-client";
 
-import type { ServerToClientEvents, TUser } from "@/assets/types";
+import type {
+  NamespaceSpecificClientToServerEvents,
+  NamespaceSpecificServerToClientEvents,
+  TUser,
+} from "@/assets/types";
 import { AuthContext } from "@/context/authContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 interface TAuthProps {
@@ -23,8 +27,16 @@ export const Auth = ({ children }: TAuthProps) => {
   });
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [socket, setSocket] = useState<
-    Socket<ServerToClientEvents> | undefined
+    | Socket<
+        NamespaceSpecificServerToClientEvents,
+        NamespaceSpecificClientToServerEvents
+      >
+    | undefined
   >(undefined);
+  const socketRef = useRef<Socket<
+    NamespaceSpecificServerToClientEvents,
+    NamespaceSpecificClientToServerEvents
+  > | null>(null);
 
   useEffect(() => {
     if (!isMobile && pathname === "/conversations") {
@@ -41,6 +53,7 @@ export const Auth = ({ children }: TAuthProps) => {
 
         if (response.status === 403) {
           navigate("/login");
+          return;
         }
 
         const userData = await response.json();
@@ -55,30 +68,36 @@ export const Auth = ({ children }: TAuthProps) => {
     if (!["/login", "/signup"].includes(pathname) && user._id.length < 1) {
       fetchUser();
     }
-  }, [pathname, user._id, isMobile]);
+  }, [pathname, user._id, isMobile, navigate]);
 
   useEffect(() => {
-    if (user._id && !socket) {
-      const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
-        withCredentials: true,
-      });
+    if (!user._id || socketRef.current) return;
 
-      newSocket.on("getOnlineUsers", (userIds: string[]) => {
-        setOnlineUsers(userIds);
-      });
+    const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
+      withCredentials: true,
+    });
 
-      newSocket.connect();
+    newSocket.on("getOnlineUsers", (userIds: string[]) => {
+      setOnlineUsers(userIds);
+    });
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSocket(newSocket);
-    }
-  }, [user._id, socket]);
+    newSocket.connect();
+    socketRef.current = newSocket;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.off("getOnlineUsers");
+      newSocket.disconnect();
+      socketRef.current = null;
+      setSocket(undefined);
+    };
+  }, [user._id]);
 
   const disconnectSocket = () => {
-    if (socket?.connected) {
-      setSocket(undefined);
-      socket?.disconnect();
-    }
+    socketRef.current?.disconnect();
+    socketRef.current = null;
+    setSocket(undefined);
   };
 
   return (

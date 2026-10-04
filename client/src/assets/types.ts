@@ -19,22 +19,49 @@ export interface TMessage {
     name: string;
     displayName: string;
   };
-  readBy: [];
+  readBy: {
+    userId:
+      | string
+      | {
+          _id: string;
+          name: string;
+          email: string;
+        };
+    readAt: string;
+  }[];
   conversationId: string;
   createdAt: string;
 }
 
-export interface ServerToClientEvents {
+export interface NamespaceSpecificServerToClientEvents {
   getOnlineUsers: (userIds: string[]) => void;
   newMessage: (message: TMessage) => void;
   conversationUpdated: (conversation: TConversation) => void;
+  messagesRead: (data: {
+    conversationId: string;
+    readerId: string;
+    messageIds: string[];
+    readAt: string;
+  }) => void;
+}
+
+export interface NamespaceSpecificClientToServerEvents {
+  "mark-message-read": (
+    data: { messageId: string },
+    callback: (response: { success: boolean; error?: string }) => void,
+  ) => void;
 }
 
 export interface TUserContext {
   user: TUser;
   setUser: Dispatch<SetStateAction<TUser>>;
   onlineUsers: string[];
-  socket: Socket<ServerToClientEvents> | undefined;
+  socket:
+    | Socket<
+        NamespaceSpecificServerToClientEvents,
+        NamespaceSpecificClientToServerEvents
+      >
+    | undefined;
   disconnectSocket: () => void;
 }
 
@@ -63,6 +90,7 @@ export interface TSelectedConversation {
   recipientDisplayPicture: string;
   recipientStatus: string;
   recipientDisplayName: string;
+  _id: string;
 }
 
 export interface TSelectedConversationContext {

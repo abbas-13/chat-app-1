@@ -88,7 +88,7 @@ export const Login = () => {
               />
               <ErrorMessage
                 errors={errors}
-                name="password"
+                name="email"
                 render={({ message }) => (
                   <p className="text-xs text-red-500 mt-1 text-center">
                     {message}

@@ -3,6 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { type Request, type Response } from "express";
 
 import User from "../models/user.ts";
+import requireLogin from "../middlewares/requireLogin.ts";
 
 cloudinary.config({
   cloud_name: "dvigsh8tl",
@@ -32,6 +33,7 @@ const upload = multer({
 export default (app: import("express").Express) => {
   app.post(
     "/api/users/profile-picture",
+    requireLogin,
     upload.single("displayPicture"),
     async (req: Request, res: Response) => {
       try {

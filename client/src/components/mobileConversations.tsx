@@ -24,6 +24,7 @@ export const MobileConversations = () => {
           credentials: "include",
         },
       );
+      if (!response.ok) throw new Error(`Search failed: ${response.status}`);
 
       const users = await response.json();
       setSearchedUsers(users);
@@ -48,7 +49,9 @@ export const MobileConversations = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error(errorData);
+          throw new Error(
+            errorData?.error ?? `Request failed: ${response.status}`,
+          );
         }
 
         const conversations = await response.json();
@@ -68,13 +71,15 @@ export const MobileConversations = () => {
   useEffect(() => {
     if (socket) {
       const handleConversationUpdate = (updatedConversation: TConversation) => {
-        setCurrConversations((prev) =>
-          prev.map((conv: TConversation) =>
-            conv._id.toString() === updatedConversation._id.toString()
-              ? updatedConversation
-              : conv,
-          ),
-        );
+        setCurrConversations((prev) => {
+          const updatedId = updatedConversation._id.toString();
+          const existing = prev.find((c) => c._id.toString() === updatedId);
+
+          if (!existing) return [updatedConversation, ...prev];
+
+          const rest = prev.filter((c) => c._id.toString() !== updatedId);
+          return [updatedConversation, ...rest];
+        });
       };
 
       socket.on("conversationUpdated", handleConversationUpdate);
