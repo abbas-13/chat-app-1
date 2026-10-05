@@ -93,10 +93,7 @@ export const SidebarProfileMenu = ({
                 className="flex justify-between w-full items-center"
               >
                 <p className="text-foreground text-sm">Logout</p>
-                <LogOut
-                  color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                  size={20}
-                />
+                <LogOut size={20} className="text-foreground" />
               </div>
             ) : (
               <div
@@ -106,10 +103,7 @@ export const SidebarProfileMenu = ({
                 className="flex justify-between w-full items-center"
               >
                 <p className="text-foreground text-sm">Login</p>
-                <LogIn
-                  color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                  size={20}
-                />
+                <LogIn size={20} className="text-foreground" />
               </div>
             )}
           </MenubarItem>

@@ -205,10 +205,10 @@ export const Dashboard = () => {
     <>
       <Navbar />
       {selectedConversation.recipientId.length > 0 ? (
-        <div className="w-full bg-secondary h-[calc(100%-58px)] flex flex-col">
+        <div className="w-full bg-background h-[calc(100%-58px)] flex flex-col">
           <div
             id="messages-container"
-            className="w-full flex flex-1 flex-col p-2 px-3 overflow-y-auto max-h-[calc(100vh-116px)]"
+            className="w-full flex flex-1 flex-col px-3 py-4 overflow-y-auto max-h-[calc(100vh-116px)]"
             ref={scrollRef}
           >
             {messages?.length > 0 &&
@@ -223,10 +223,10 @@ export const Dashboard = () => {
                         readReceiptUserId(receipt.userId) === user._id,
                     ) ?? false
                   }
-                  className={`max-w-[60%] w-fit flex flex-col mb-2 rounded-[18px] p-2 px-4 gap-[2px] ${
+                  className={`max-w-[70%] w-fit flex flex-col mb-2 rounded-2xl px-3.5 py-2 gap-1 ${
                     user._id === item.senderId._id
-                      ? "bg-primary dark:bg-background! text-background dark:text-foreground self-end items-end"
-                      : "bg-card text-foreground border border-border/60 self-start items-start"
+                      ? "bg-primary text-primary-foreground self-end items-end"
+                      : "bg-card text-card-foreground border border-border dark:bg-secondary dark:border-white/15 self-start items-start"
                   }`}
                 >
                   <p className="text-[14px] text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
@@ -234,10 +234,10 @@ export const Dashboard = () => {
                   </p>
                   <div className="flex gap-2">
                     <span
-                      className={`w-full text-[8px] ${
+                      className={`w-full text-[10px] ${
                         user._id === item.senderId._id
-                          ? "text-end text-gray-400"
-                          : "text-start text-gray-600 dark:text-black"
+                          ? "text-end text-primary-foreground/70"
+                          : "text-start text-muted-foreground"
                       }`}
                     >
                       {new Date(item.createdAt).toLocaleTimeString("en-US", {
@@ -261,29 +261,32 @@ export const Dashboard = () => {
           </div>
           <form
             onSubmit={handleSubmit(sendMessage)}
-            className="w-full bg-background px-2 border-t-2 border-foreground max-h-[58px] h-[58px] flex gap-2 justify-center items-center"
+            className="w-full bg-card px-3 border-t border-border h-[58px] flex gap-2 justify-center items-center"
           >
             <Input
               {...register("message")}
-              placeholder="send message"
+              placeholder="Send a message"
               name="message"
-              className="shadow-none border-2 rounded-[24px] focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="rounded-lg border-border bg-background shadow-none focus-visible:ring-1 focus-visible:ring-ring"
               autoComplete="off"
             />
             <Button
               type="submit"
-              className="bg-background border-2! text-foreground rounded-full hover:bg-white focus-visible:border-none! focus-visible:ring-none! focus-visible:ring-0! active:bg-background border border-input active:border-foreground"
+              className="rounded-lg border border-primary bg-card text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
             >
-              <SendHorizonal size={28} />
+              <SendHorizonal size={20} />
             </Button>
           </form>
         </div>
       ) : (
-        <div className="flex flex-col bg-secondary gap-[0.6rem] max-h-[calc(100%-58px)] justify-center h-full w-full items-center">
-          <img className="w-[150px]" src="/social-ly-logo.svg" />
-          <h1 className="bg-gradient-to-r from-[#5C5C99] to-[#292966] bg-clip-text text-transparent text-[72px] font-semibold">
+        <div className="flex flex-col bg-background gap-3 max-h-[calc(100%-58px)] justify-center h-full w-full items-center">
+          <img className="w-[120px]" src="/social-ly-logo.svg" />
+          <h1 className="text-[56px] font-extrabold leading-none tracking-tight text-foreground">
             social.ly
           </h1>
+          <p className="text-sm text-muted-foreground">
+            Select a conversation to start messaging
+          </p>
         </div>
       )}
     </>

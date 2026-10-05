@@ -67,10 +67,10 @@ export const SignUp = () => {
 
   return (
     <div className="h-screen bg-background flex justify-center items-center">
-      <Card className="items-center w-[300px] flex flex-col gap-0 bg-secondary! dark:bg-[#1a202c]">
+      <Card className="items-center w-[300px] flex flex-col gap-0 bg-card border border-border">
         <div className="flex gap-2 items-center">
           <img src="/social-ly-logo.svg" width={40} />
-          <h1 className="bg-gradient-to-r from-[#5C5C99] to-[#292966] bg-clip-text text-transparent text-transparent text-[42px] text-balance font-extrabold">
+          <h1 className="text-[42px] font-extrabold leading-none tracking-tight text-foreground">
             social.ly
           </h1>
         </div>
