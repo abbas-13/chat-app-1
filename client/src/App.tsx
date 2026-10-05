@@ -68,7 +68,7 @@ function App() {
                 <Route
                   path="/"
                   element={
-                    <div className="bg-[#e6e6ff] w-full h-screen outline-none">
+                    <div className="bg-background w-full h-screen outline-none">
                       <Dashboard />
                     </div>
                   }

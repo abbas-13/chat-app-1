@@ -67,7 +67,7 @@ export const SidebarProfileMenu = ({
       <MenubarMenu>
         <MenubarTrigger className="flex justify-between cursor-pointer items-center w-full data-[state=open]:bg-white! h-full px-2 focus:bg-secondary!">
           <p className="text-foreground text-sm">
-            {user.displayName ?? user.name}
+            {user.displayName || user.name}
           </p>
           <Avatar
             size={`${isMobile ? "default" : "sm"}`}
@@ -93,10 +93,7 @@ export const SidebarProfileMenu = ({
                 className="flex justify-between w-full items-center"
               >
                 <p className="text-foreground text-sm">Logout</p>
-                <LogOut
-                  color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                  size={20}
-                />
+                <LogOut size={20} className="text-foreground" />
               </div>
             ) : (
               <div
@@ -106,10 +103,7 @@ export const SidebarProfileMenu = ({
                 className="flex justify-between w-full items-center"
               >
                 <p className="text-foreground text-sm">Login</p>
-                <LogIn
-                  color={`${theme === "light" ? "#292966" : "#f3f3ff"}`}
-                  size={20}
-                />
+                <LogIn size={20} className="text-foreground" />
               </div>
             )}
           </MenubarItem>

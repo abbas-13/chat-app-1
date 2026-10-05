@@ -21,10 +21,25 @@ import userRoutes from "./routes/userRoutes.ts";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const MONGODB_URI = process.env.MONGODB_URI?.trim();
+const SESSION_SECRET = process.env.SESSION_SECRET?.trim();
+
+if (!MONGODB_URI) {
+  throw new Error(
+    "MONGODB_URI is not set. Add it to your .env file before starting the server.",
+  );
+}
+
+if (!SESSION_SECRET) {
+  throw new Error(
+    "SESSION_SECRET is not set. Add it to your .env file before starting the server.",
+  );
+}
+
 app.set("trust proxy", 1);
 app.use(express.json());
 
-await mongoose.connect(process.env.MONGODB_URI || "");
+await mongoose.connect(MONGODB_URI);
 console.log("MongoDB Connected!");
 
 const corsOptions = {
@@ -38,39 +53,25 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(
-  session({
-    secret: process.env.COOKIE_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient() as any,
-    }),
-    cookie: {
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-      maxAge: 24 * 3600 * 1000,
-    },
+const sessionMiddleware = session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: MONGODB_URI,
+    stringify: false, // connect-mongo v6 + passport
   }),
-);
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  },
+});
 
-io.engine.use(
-  session({
-    secret: process.env.COOKIE_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient() as any,
-    }),
-    cookie: {
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-      maxAge: 24 * 3600 * 1000,
-    },
-  }),
-);
+app.use(sessionMiddleware);
+
+io.engine.use(sessionMiddleware);
 
 const PORT = process.env.PORT || 8000;
 
