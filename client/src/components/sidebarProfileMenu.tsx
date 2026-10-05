@@ -67,7 +67,7 @@ export const SidebarProfileMenu = ({
       <MenubarMenu>
         <MenubarTrigger className="flex justify-between cursor-pointer items-center w-full data-[state=open]:bg-white! h-full px-2 focus:bg-secondary!">
           <p className="text-foreground text-sm">
-            {user.displayName ?? user.name}
+            {user.displayName || user.name}
           </p>
           <Avatar
             size={`${isMobile ? "default" : "sm"}`}

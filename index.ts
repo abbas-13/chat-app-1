@@ -38,39 +38,25 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(
-  session({
-    secret: process.env.COOKIE_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient() as any,
-    }),
-    cookie: {
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-      maxAge: 24 * 3600 * 1000,
-    },
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI!,
+    stringify: false, // connect-mongo v6 + passport
   }),
-);
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+  },
+});
 
-io.engine.use(
-  session({
-    secret: process.env.COOKIE_KEY!,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      client: mongoose.connection.getClient() as any,
-    }),
-    cookie: {
-      secure: "auto",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
-      maxAge: 24 * 3600 * 1000,
-    },
-  }),
-);
+app.use(sessionMiddleware);
+
+io.engine.use(sessionMiddleware);
 
 const PORT = process.env.PORT || 8000;
 

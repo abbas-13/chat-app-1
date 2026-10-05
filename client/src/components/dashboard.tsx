@@ -15,8 +15,8 @@ interface TSendMessage {
   message: string;
 }
 
-const readReceiptUserId = (userId: string | { _id: string }) =>
-  typeof userId === "string" ? userId : userId._id;
+const readReceiptUserId = (userId: string | { _id: string } | null) =>
+  !userId ? "" : typeof userId === "string" ? userId : userId._id;
 
 export const Dashboard = () => {
   const { handleSubmit, register, reset } = useForm<TSendMessage>();
@@ -164,7 +164,6 @@ export const Dashboard = () => {
 
           emittedReadIds.current.add(messageId);
           observer.unobserve(element);
-          element.dataset.read = "true";
 
           socket.emit("mark-message-read", { messageId }, (response) => {
             if (!response?.success) {
@@ -224,10 +223,10 @@ export const Dashboard = () => {
                         readReceiptUserId(receipt.userId) === user._id,
                     ) ?? false
                   }
-                  className={`max-w-[60%] w-fit flex flex-col mb-2 rounded-[18px] p-2 px-4 flex flex-col gap-[2px] ${
+                  className={`max-w-[60%] w-fit flex flex-col mb-2 rounded-[18px] p-2 px-4 gap-[2px] ${
                     user._id === item.senderId._id
                       ? "bg-primary dark:bg-background! text-background dark:text-foreground self-end items-end"
-                      : "bg-card text-foreground border-border/60 self-start items-start"
+                      : "bg-card text-foreground border border-border/60 self-start items-start"
                   }`}
                 >
                   <p className="text-[14px] text-left break-words whitespace-pre-wrap [word-break:break-word] max-w-full">
